@@ -1,4 +1,9 @@
 
 import { ethers } from "ethers";
-export const ETH_ADDRESS = ethers.ZeroAddress;
-export const WAD = ethers.parseEther("1");
+
+import * as geni from "../../geni_data/data/dev/geni/addresses.json";
+
+export const constants = {
+    ETH_ADDRESS: ethers.ZeroAddress,
+    WAD: ethers.parseEther("1")
+}
