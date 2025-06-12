@@ -1,17 +1,21 @@
 
-import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse } from 'ethers';
-import { GeniDexCore } from './genidex.core';
+import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse } from 'ethers';
+import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
-import { convertDecimals, toRawAmount } from '../utils';
-import { OutputOrder } from '../types';
+import { OutputOrder, orderParams } from '../types';
 
+
+
+/**
+ * @group Contracts
+ */
 export class BuyOrders {
-    core!: GeniDexCore;
+    genidex!: GeniDex;
     contract: Contract;
 
-    constructor(_core: GeniDexCore) {
-        this.core = _core;
-        this.contract = this.core.contract;
+    constructor(_genidex: GeniDex) {
+        this.genidex = _genidex;
+        this.contract = this.genidex.contract;
     }
 
     /**
@@ -32,29 +36,16 @@ export class BuyOrders {
      * @returns TransactionResponse or receipt if `waitForConfirm` is true.
      */
     async placeBuyOrder({
-        signer,
-        marketId,
-        normPrice,
-        normQuantity,
-        referrer,
-        waitForConfirm = false
-    }: {
-        signer: Signer;
-        marketId: BigNumberish;
-        normPrice: BigNumberish;
-        normQuantity: BigNumberish;
-        referrer: string;
-        waitForConfirm?: boolean;
-    }): Promise<TransactionResponse | undefined> {
-        const sellOrderIds = await this.core.sellOrders.getMatchingSellOrderIds(
+        signer, marketId,
+        normPrice, normQuantity,
+        referrer, waitForConfirm = false
+    }: orderParams ): Promise<ContractTransactionResponse | undefined> {
+        const sellOrderIds = await this.genidex.sellOrders.getMatchingSellOrderIds(
             marketId,
             normPrice,
             normQuantity
         );
-
         const filledBuyOrderId = await this.randomFilledBuyOrderID(marketId);
-
-        const contract = this.core.getContract(signer);
         const args = [
             marketId,
             normPrice,
@@ -64,14 +55,14 @@ export class BuyOrders {
             referrer,
         ];
 
-        try {
+        return await this.genidex.writeContract(signer, 'placeBuyOrder', args, {}, waitForConfirm);
+
+        /*try {
             const tx = await contract.placeBuyOrder(...args);
             return waitForConfirm ? await tx.wait() : tx;
-            // const tx = await contract.getFunction("placeBuyOrder").staticCall(...args);
-            // return tx;
         } catch (error) {
-            this.core.revertError(error, "placeBuyOrder", args);
-        }
+            await this.genidex.revertError(error, "placeBuyOrder", args);
+        }*/
     }
 
     /**
@@ -149,7 +140,7 @@ export class BuyOrders {
      */
     async randomFilledBuyOrderID(marketId: BigNumberish): Promise<bigint | null> {
         const marketBuyOrders = await this.getMarketBuyOrders(marketId);
-        const filledBuyOrderIDs = this.core.getFilledOrderIDs(marketBuyOrders);
+        const filledBuyOrderIDs = this.genidex.getFilledOrderIDs(marketBuyOrders);
         const random = Math.floor(Math.random() * filledBuyOrderIDs.length);
         const filledBuyOrderId = filledBuyOrderIDs[random];
         return filledBuyOrderId || 0n;
@@ -170,7 +161,7 @@ export class BuyOrders {
     ) {
         const sellOrders: OutputOrder[] = await this.getBuyOrders(marketId, normPrice);
         const sortedBuyOrders: OutputOrder[] = this.sortBuyOrders(sellOrders);
-        const buyOrderIds = this.core.getMatchingOrderIds(sortedBuyOrders, normQuantity);
+        const buyOrderIds = this.genidex.getMatchingOrderIds(sortedBuyOrders, normQuantity);
         return buyOrderIds;
     }
 
@@ -188,16 +179,14 @@ export class BuyOrders {
         orderIndex: BigNumberish,
         waitForConfirm?: boolean
     ): Promise<TransactionResponse | undefined> {
-        const contract = this.core.getContract(signer);
+        const contract = this.genidex.getContract(signer);
         const args = [marketId, orderIndex];
         try{
             const tx = await contract.cancelBuyOrder(...args);
             return waitForConfirm ? await tx.wait() : tx;
         }catch(error){
-            this.core.revertError(error, 'cancelBuyOrder', args);
+            await this.genidex.revertError(error, 'cancelBuyOrder', args);
         }
     }
 
 }
-
-// Object.assign(GeniDexCore.prototype, BuyOrders.prototype);

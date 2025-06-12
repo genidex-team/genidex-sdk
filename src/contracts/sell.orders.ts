@@ -1,17 +1,16 @@
 
 import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse } from 'ethers';
-import { GeniDexCore } from './genidex.core';
+import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
-import { convertDecimals, toRawAmount } from '../utils';
 import { OutputOrder } from '../types';
 
 export class SellOrders {
-    core!: GeniDexCore;
+    genidex!: GeniDex;
     contract: Contract;
 
-    constructor(_core: GeniDexCore) {
-        this.core = _core;
-        this.contract = this.core.contract;
+    constructor(_genidex: GeniDex) {
+        this.genidex = _genidex;
+        this.contract = this.genidex.contract;
     }
 
     /**
@@ -46,11 +45,11 @@ export class SellOrders {
         referrer: string;
         waitForConfirm?: boolean;
     }): Promise<TransactionResponse|undefined> {
-        const buyOrders = this.core.buyOrders;
+        const buyOrders = this.genidex.buyOrders;
         const buyOrderIds = await buyOrders.getMatchingBuyOrderIds(marketId, normPrice, normQuantity);
         const filledSellOrderId = await this.randomFilledSellOrderID(marketId);
         // console.log(sellOrders);
-        const contract = this.core.getContract(signer);
+        const contract = this.genidex.getContract(signer);
         const args = [
             marketId,
             normPrice,
@@ -65,7 +64,7 @@ export class SellOrders {
             // const tx = await contract.getFunction("placeSellOrder").staticCall(...args);
             // return tx;
         }catch(err){
-            this.core.revertError(err, 'placeSellOrder', args);
+            await this.genidex.revertError(err, 'placeSellOrder', args);
         }
     }
 
@@ -77,7 +76,7 @@ export class SellOrders {
      */
     async randomFilledSellOrderID(marketId: BigNumberish): Promise<bigint | null> {
         const marketSellOrders = await this.getMarketSellOrders(marketId);
-        const filledSellOrderIDs = this.core.getFilledOrderIDs(marketSellOrders);
+        const filledSellOrderIDs = this.genidex.getFilledOrderIDs(marketSellOrders);
         const random = Math.floor(Math.random() * filledSellOrderIDs.length);
         const filledSellOrderId = filledSellOrderIDs[random];
         return filledSellOrderId || 0n;
@@ -144,7 +143,7 @@ export class SellOrders {
     ){
         const sellOrders: OutputOrder[] = await this.getSellOrders(marketId, normPrice);
         const sortedSellOrders: OutputOrder[] = this.sortSellOrders(sellOrders);
-        const sellOrderIds = this.core.getMatchingOrderIds(sortedSellOrders, normQuantity);
+        const sellOrderIds = this.genidex.getMatchingOrderIds(sortedSellOrders, normQuantity);
         return sellOrderIds;
     }
 
@@ -162,13 +161,13 @@ export class SellOrders {
         orderIndex: BigNumberish,
         waitForConfirm?: boolean
     ): Promise<TransactionResponse | undefined> {
-        const contract = this.core.getContract(signer);
+        const contract = this.genidex.getContract(signer);
         const args = [marketId, orderIndex]
         try{
             const tx = await contract.cancelSellOrder(...args);
             return waitForConfirm ? await tx.wait() : tx;
         }catch(error){
-            this.core.revertError(error, 'cancelSellOrder', args);
+            await this.genidex.revertError(error, 'cancelSellOrder', args);
         }
     }
 

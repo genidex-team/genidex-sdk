@@ -1,16 +1,17 @@
 
-import { BigNumberish, Contract, Signer, TransactionResponse } from 'ethers';
-import { GeniDexCore } from './genidex.core';
+import { BigNumberish, Contract, ContractTransactionResponse, Signer, TransactionReceipt, TransactionResponse, parseEther, parseUnits } from 'ethers';
+import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
-import { convertDecimals, toRawAmount } from '../utils';
+import { utils } from '../utils';
+import { GeniDexTransactionResponse } from '../types';
 
 export class Balances {
-    core!: GeniDexCore;
+    genidex!: GeniDex;
     contract: Contract;
 
-    constructor(_core: GeniDexCore) {
-        this.core = _core;
-        this.contract = this.core.contract;
+    constructor(_genidex: GeniDex) {
+        this.genidex = _genidex;
+        this.contract = this.genidex.contract;
     }
 
     /**
@@ -25,7 +26,7 @@ export class Balances {
     async depositEth(
         signer: Signer,
         normAmount: BigNumberish
-    ): Promise<TransactionResponse | undefined> {
+    ): Promise<GeniDexTransactionResponse | undefined> {
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normAmount must be > 0");
         }
@@ -33,18 +34,18 @@ export class Balances {
         if (value <= 0n) {
             throw new Error("ETH amount must be greater than zero");
         }
-        const contract = new Contract(this.core.address, this.core.abi, signer);
-        try{
-            const tx = await contract.depositEth({ value });
-            return tx;
-        }catch(error){
-            console.error({
-                'functionName': 'depositEth',
-                signer: signer.getAddress(),
-                value
-            });
-            this.core.revertError(error, "depositEth");
-        }
+        const overrides = {
+            value: normAmount,
+            // gasLimit: 200_000,
+            gasPrice: parseUnits('200', 'gwei')
+        };
+        const tx = await this.genidex.writeContract(signer, "depositEth", [], overrides )
+        // try{
+        //     await tx?.wait();
+        // }catch(error){
+        //     this.genidex.revertError(error, 'depositEth', [])
+        // }
+        return tx;
     }
 
     /**
@@ -56,68 +57,53 @@ export class Balances {
      * @param normAmount - The amount of ETH to withdraw, in wei (bigint or compatible BigNumberish).
      * @returns Promise that resolves once the transaction is confirmed.
      */
-    async withdrawEth(signer: Signer, normAmount: BigNumberish): Promise<TransactionResponse | undefined> {
+    async withdrawEth(
+        signer: Signer, normAmount: BigNumberish
+    ): Promise<GeniDexTransactionResponse | undefined> {
         if (BigInt(normAmount) <= 0n) {
             throw new Error("Withdrawal amount must be greater than zero");
         }
-
-        const contract = new Contract(this.core.address, this.core.abi, signer);
-        try{
-            const tx = await contract.withdrawEth(normAmount);
-            return tx;
-        }catch(error){
-            console.error({
-                'functionName': 'withdrawEth',
-                signer: signer.getAddress(),
-                normAmount
-            });
-            this.core.revertError(error, "withdrawEth");
-        }
+        const args = [
+            normAmount
+        ];
+        return await this.genidex.writeContract(signer, "withdrawEth", args, {} )
     }
 
     /**
-     * Deposit a token into the DEX contract using a normalized amount (18 decimals).
+     * Deposits a specified ERC20 token into the GeniDex contract using a normalized amount with 18 decimals.
      *
-     * @param tokenAddress - Address of the ERC20 token.
-     * @param normAmount - Token amount in 18 decimals (as bigint or string).
+     * @param signer - The Signer instance used to sign the transaction.
+     * @param tokenAddress - The address of the ERC20 token to deposit.
+     * @param normAmount - The deposit amount, normalized to 18 decimals (as bigint or string).
+     * @param normApproveAmount - The amount to approve for transfer, also in 18 decimals.
+     * @returns A Promise that resolves to the transaction response if the deposit is initiated, or undefined otherwise.
      */
     async depositToken(
         signer: Signer,
         tokenAddress: string,
         normAmount: BigNumberish,
         normApproveAmount: BigNumberish
-    ): Promise<TransactionResponse | undefined>{
+    ): Promise<TransactionResponse | TransactionReceipt | undefined | null>{
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normalizedAmount must be > 0");
         }
-        const erc20 = new ERC20(tokenAddress, signer);
-        const token = await this.core.getTokenMeta(tokenAddress);
+        const erc20 = new ERC20(tokenAddress, this.genidex.provider);
+        const token = await this.genidex.tokens.getTokenInfo(tokenAddress);
         const {decimals} = token;
-        const rawAmount = toRawAmount(normAmount, decimals);
+        const rawAmount = utils.toRawAmount(normAmount, decimals);
         // Approve if needed
-        const rawAllowance = await erc20.allowance(signer.getAddress(), this.core.address);
+        const rawAllowance = await erc20.allowance(signer.getAddress(), this.genidex.address);
 
         if (rawAllowance < rawAmount) {
-            const rawApproveAmount = toRawAmount(normApproveAmount, decimals);
-            await erc20.approve(this.core.address, rawApproveAmount);
+            const rawApproveAmount = utils.toRawAmount(normApproveAmount, decimals);
+            await erc20.approve(signer, this.genidex.address, rawApproveAmount);
         }
         // Call depositToken(normalizedAmount)
-        const contract = new Contract(this.core.address, this.core.abi, signer);
-        try {
-            const tx = await contract.depositToken(tokenAddress, normAmount);
-            return tx;
-        }catch(error){
-            console.error({
-                'functionName': 'depositToken',
-                signer: signer.getAddress(),
-                tokenAddress,
-                normAmount
-            });
-            this.core.revertError(error, "depositToken");
-        }
-        // console.log("Deposit tx sent:", tx.hash);
-        // await tx.wait();
-        
+        const args = [
+            tokenAddress,
+            normAmount
+        ];
+        return await this.genidex.writeContract(signer, "depositToken", args, {} )
     }
 
     /**
@@ -125,38 +111,31 @@ export class Balances {
      *
      * @param signer - Signer to send the transaction
      * @param tokenAddress - Address of the token to withdraw
-     * @param normalizedAmount - Amount in normalized (18-decimal) format
+     * @param normAmount - Amount in normalized (18-decimal) format
      */
     async withdrawToken(
         signer: Signer,
         tokenAddress: string,
         normAmount: BigNumberish
-    ): Promise<TransactionResponse | undefined> {
+    ): Promise<TransactionResponse | TransactionReceipt | undefined | null> {
 
-        try {
-            const contract = new Contract(this.core.address, this.core.abi, signer);
-            const tx = await contract.withdrawToken(tokenAddress, normAmount);
-            return tx;
-        } catch (error: any) {
-            console.error({
-                'functionName': 'withdrawToken',
-                signer: signer.getAddress(),
-                tokenAddress,
-                normAmount
-            });
-            this.core.revertError(error, "withdrawToken");
-        }
+        const args = [
+            tokenAddress,
+            normAmount
+        ];
+        return await this.genidex.writeContract(signer, "withdrawToken", args, {} );
     }
 
     /**
-     * Get the deposited balance of a token.
+     * Get the balance of accountAddress on GeniDex.
      *
      * @param accountAddress
-     * @param tokenAddress - The ERC20 token address to query.
-     * @returns Promise resolving to the deposited token balance (as bigint).
+     * @param address - Token address or ETH_ADDRESS (0x0).
+     * @returns Promise resolving to the deposited balance (as bigint), normalized to 18 decimals.
      */
-    async getTokenBalance(accountAddress: string, tokenAddress: string): Promise<bigint> {
-        const normAmount = await this.contract.balances(accountAddress, tokenAddress);
+    async getBalance(accountAddress: string, address: string): Promise<bigint> {
+        const args = [accountAddress, address];
+        const normAmount = await this.genidex.readContract('balances', args);
         return normAmount;
     }
 }
