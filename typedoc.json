@@ -1,4 +1,8 @@
 {
   "entryPoints": ["src/index.ts"],
-  "out": "docs/api"
+  "tsconfig": "tsconfig.json",
+  "out": "docs/out",
+  "categorizeByGroup": true,
+  "groupOrder": ["GeniDex", "Contracts", "Utils"],
+  "projectDocuments": ["docs/*.md"]
 }
