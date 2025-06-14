@@ -8,11 +8,10 @@
   "scripts": {
     "build": "tsc && rollup -c",
     "dev": "tsc --watch & rollup -c -w",
-    "scripts": "nodemon --watch ./src --watch ./scripts --ext ts,json --exec 'clear && clear && ts-node' --project tsconfig.dev.json",
+    "examples": "nodemon --watch ./src --watch ./examples --ext ts,json --exec 'clear && clear && ts-node' --project tsconfig.dev.json",
     "docs": "typedoc",
     "dev_docs": "nodemon --watch ./src --watch typedoc.json --ext .ts,.json --exec typedoc",
     "docs_server": "live-server ./docs/out --open=/ --watch=./docs/out",
-    "examples": "live-server ./ --open=/examples --watch=.",
     "test": "nodemon --exec npx jest --watch ./test --watch ./src"
   },
   "keywords": [],

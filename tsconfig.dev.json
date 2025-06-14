@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["src", "test", "scripts"],
+  "include": ["src", "test", "examples"],
   "exclude": ["node_modules"]
 }
