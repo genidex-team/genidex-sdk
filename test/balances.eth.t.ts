@@ -29,18 +29,18 @@ test("deposit, withdraw, getTokenBalance", async () => {
     const depositAmount = ethers.parseEther("1");
 
     try{
-        const tx = await genidex.balances.depositEth(signer, depositAmount);
+        const tx = await genidex.balances.depositEth({signer, normAmount: depositAmount});
         if(tx) tx.waitForConfirms().then((receipt)=>{
-            console.log(receipt.hash);
+            console.log(receipt?.hash);
         })
     }catch(error){
         console.log(error);
     }
     
     try {
-        const tx2 = await genidex.balances.depositEth(signer, depositAmount);
+        const tx2 = await genidex.balances.depositEth({signer, normAmount: depositAmount});
         if(tx2) tx2.waitForConfirms().then((receipt)=>{
-            console.log(receipt.hash);
+            console.log(receipt?.hash);
         })
     } catch (error) {
         console.log(error);
@@ -49,7 +49,7 @@ test("deposit, withdraw, getTokenBalance", async () => {
     await provider.send("evm_setAutomine", [true]);
 
     await new Promise((r) => setTimeout(r, 1000));
-    return;
+    // return;
 
     // check balance
     const balance2 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)
@@ -58,7 +58,7 @@ test("deposit, withdraw, getTokenBalance", async () => {
 
     // withdraw
     if(balance2>0){
-        await genidex.balances.withdrawEth(signer, balance2);
+        await genidex.balances.withdrawEth({signer, normAmount: balance2});
 
         // check balance
         const balance3 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)

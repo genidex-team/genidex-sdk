@@ -26,7 +26,9 @@ test("deposit, withdraw, getTokenBalance", async () => {
     // deposit
     const depositAmount = ethers.parseEther("100");
     const approveAmount = depositAmount;
-    await genidex.balances.depositToken(signer, tokenAddress, depositAmount, approveAmount);
+    await genidex.balances.depositToken({
+        signer, tokenAddress, normAmount: depositAmount, normApproveAmount: approveAmount
+    });
 
     // check balance
     const balance2 = await genidex.balances.getBalance(signerAddress, tokenAddress)
@@ -36,7 +38,7 @@ test("deposit, withdraw, getTokenBalance", async () => {
     // withdraw
     if(balance2>0){
         // const withdrawalAmount = ethers.parseEther("100");
-        await genidex.balances.withdrawToken(signer, tokenAddress, balance2);
+        await genidex.balances.withdrawToken({signer, tokenAddress, normAmount: balance2});
 
         // check balance
         const balance3 = await genidex.balances.getBalance(signerAddress, tokenAddress)

@@ -1,8 +1,7 @@
 
-import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse } from 'ethers';
+import { BigNumberish, Contract, Signer, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
-import { ERC20 } from './erc20';
-import { OutputOrder } from '../types';
+import { OutputOrder, orderParams } from '../types';
 
 export class SellOrders {
     genidex!: GeniDex;
@@ -35,21 +34,13 @@ export class SellOrders {
         marketId,
         normPrice,
         normQuantity,
-        referrer,
-        waitForConfirm = false
-    }: {
-        signer: Signer;
-        marketId: BigNumberish;
-        normPrice: BigNumberish;
-        normQuantity: BigNumberish;
-        referrer: string;
-        waitForConfirm?: boolean;
-    }): Promise<TransactionResponse|undefined> {
+        referrer = ZeroAddress,
+        overrides = {}
+    }: orderParams): Promise<TransactionResponse|undefined> {
         const buyOrders = this.genidex.buyOrders;
         const buyOrderIds = await buyOrders.getMatchingBuyOrderIds(marketId, normPrice, normQuantity);
         const filledSellOrderId = await this.randomFilledSellOrderID(marketId);
         // console.log(sellOrders);
-        const contract = this.genidex.getContract(signer);
         const args = [
             marketId,
             normPrice,
@@ -58,14 +49,8 @@ export class SellOrders {
             buyOrderIds,
             referrer
         ]
-        try{
-            const tx = await contract.placeSellOrder(...args);
-            return waitForConfirm ? await tx.wait() : tx;
-            // const tx = await contract.getFunction("placeSellOrder").staticCall(...args);
-            // return tx;
-        }catch(err){
-            await this.genidex.revertError(err, 'placeSellOrder', args);
-        }
+        const method = 'placeSellOrder';
+        return await this.genidex.writeContract({signer, method, args, overrides});
     }
 
     /**

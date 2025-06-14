@@ -1,9 +1,41 @@
 
-import { BigNumberish, Contract, ContractTransactionResponse, Signer, TransactionReceipt, TransactionResponse, parseEther, parseUnits } from 'ethers';
+import {
+    BigNumberish, Contract,
+    Signer, TransactionReceipt,
+    TransactionRequest,
+    TransactionResponse
+} from 'ethers';
 import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
 import { utils } from '../utils';
 import { GeniDexTransactionResponse } from '../types';
+
+type depositEthParams = {
+    signer: Signer;
+    normAmount: BigNumberish;
+    overrides?: TransactionRequest;
+}
+
+type withdrawEthParams = {
+    signer: Signer;
+    normAmount: BigNumberish;
+    overrides?: TransactionRequest;
+}
+
+type depositTokenParams = {
+    signer: Signer;
+    tokenAddress: string;
+    normAmount: BigNumberish;
+    normApproveAmount: BigNumberish;
+    overrides?: TransactionRequest;
+}
+
+type withdrawTokenParams = {
+    signer: Signer;
+    tokenAddress: string;
+    normAmount: BigNumberish;
+    overrides?: TransactionRequest;
+}
 
 export class Balances {
     genidex!: GeniDex;
@@ -23,10 +55,11 @@ export class Balances {
      * @param normAmount - The amount of ETH to deposit, in wei (as bigint or string).
      * @returns Promise that resolves once the transaction is confirmed.
      */
-    async depositEth(
-        signer: Signer,
-        normAmount: BigNumberish
-    ): Promise<GeniDexTransactionResponse | undefined> {
+    async depositEth({
+        signer,
+        normAmount,
+        overrides = {}
+    }: depositEthParams): Promise<GeniDexTransactionResponse | undefined> {
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normAmount must be > 0");
         }
@@ -34,17 +67,15 @@ export class Balances {
         if (value <= 0n) {
             throw new Error("ETH amount must be greater than zero");
         }
-        const overrides = {
-            value: normAmount,
-            // gasLimit: 200_000,
-            gasPrice: parseUnits('200', 'gwei')
-        };
-        const tx = await this.genidex.writeContract(signer, "depositEth", [], overrides )
-        // try{
-        //     await tx?.wait();
-        // }catch(error){
-        //     this.genidex.revertError(error, 'depositEth', [])
-        // }
+
+        const tx = await this.genidex.writeContract({
+            signer,
+            method: "depositEth",
+            overrides: {
+                ...overrides,
+                value,
+            }
+        });
         return tx;
     }
 
@@ -58,7 +89,7 @@ export class Balances {
      * @returns Promise that resolves once the transaction is confirmed.
      */
     async withdrawEth(
-        signer: Signer, normAmount: BigNumberish
+        {signer, normAmount, overrides = {}}: withdrawEthParams
     ): Promise<GeniDexTransactionResponse | undefined> {
         if (BigInt(normAmount) <= 0n) {
             throw new Error("Withdrawal amount must be greater than zero");
@@ -66,7 +97,12 @@ export class Balances {
         const args = [
             normAmount
         ];
-        return await this.genidex.writeContract(signer, "withdrawEth", args, {} )
+        return await this.genidex.writeContract({
+            signer,
+            method: "withdrawEth",
+            args,
+            overrides
+        });
     }
 
     /**
@@ -78,11 +114,13 @@ export class Balances {
      * @param normApproveAmount - The amount to approve for transfer, also in 18 decimals.
      * @returns A Promise that resolves to the transaction response if the deposit is initiated, or undefined otherwise.
      */
-    async depositToken(
-        signer: Signer,
-        tokenAddress: string,
-        normAmount: BigNumberish,
-        normApproveAmount: BigNumberish
+    async depositToken({
+        signer,
+        tokenAddress,
+        normAmount,
+        normApproveAmount,
+        overrides = {}
+    }: depositTokenParams
     ): Promise<TransactionResponse | TransactionReceipt | undefined | null>{
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normalizedAmount must be > 0");
@@ -103,7 +141,12 @@ export class Balances {
             tokenAddress,
             normAmount
         ];
-        return await this.genidex.writeContract(signer, "depositToken", args, {} )
+        return await this.genidex.writeContract({
+            signer,
+            method: "depositToken",
+            args,
+            overrides
+        });
     }
 
     /**
@@ -113,28 +156,31 @@ export class Balances {
      * @param tokenAddress - Address of the token to withdraw
      * @param normAmount - Amount in normalized (18-decimal) format
      */
-    async withdrawToken(
-        signer: Signer,
-        tokenAddress: string,
-        normAmount: BigNumberish
+    async withdrawToken({
+        signer,
+        tokenAddress,
+        normAmount,
+        overrides = {}
+    }: withdrawTokenParams
     ): Promise<TransactionResponse | TransactionReceipt | undefined | null> {
 
         const args = [
             tokenAddress,
             normAmount
         ];
-        return await this.genidex.writeContract(signer, "withdrawToken", args, {} );
+        const method = 'withdrawToken';
+        return await this.genidex.writeContract({signer, method, args, overrides });
     }
 
     /**
      * Get the balance of accountAddress on GeniDex.
      *
      * @param accountAddress
-     * @param address - Token address or ETH_ADDRESS (0x0).
+     * @param tokenOrEtherAddress - Token address or ETH_ADDRESS (0x0).
      * @returns Promise resolving to the deposited balance (as bigint), normalized to 18 decimals.
      */
-    async getBalance(accountAddress: string, address: string): Promise<bigint> {
-        const args = [accountAddress, address];
+    async getBalance(accountAddress: string, tokenOrEtherAddress: string): Promise<bigint> {
+        const args = [accountAddress, tokenOrEtherAddress];
         const normAmount = await this.genidex.readContract('balances', args);
         return normAmount;
     }

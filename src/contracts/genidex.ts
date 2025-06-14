@@ -3,26 +3,25 @@ import { BigNumberish, Contract,
     ErrorDescription, getBigInt, Interface, JsonRpcProvider, Network,
     Provider, Signer, TransactionReceipt, TransactionResponse, 
     WebSocketProvider, parseUnits,
-    ContractTransactionReceipt} from 'ethers';
+    ContractTransactionReceipt, TransactionRequest,
+    Result} from 'ethers';
 import { abi } from '../../../genidex_contract/artifacts/contracts/GeniDex.sol/GeniDex.json';
 import { Markets } from './markets';
 import { Balances } from './balances';
 import { BuyOrders } from './buy.orders';
-import { TokenInfo, Market, OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse } from "../types";
+import { TokenInfo, Market, OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts } from "../types";
 import { SellOrders } from './sell.orders';
 import { Tokens } from './tokens';
 import { IERC20Errors } from './abis/ierc20.errors';
 import {config} from '../config/config';
+import { Tx } from './tx';
+import { utils } from "../utils";
 
-interface WaitOpts {
-  /** How many confirmations before resolving (default: 1) */
-  confirmations?: number;
-  /** Abort if the receipt is not found within this period, in ms (default: 120 000) */
-  timeoutMs?: number;
-  /** Polling interval, in ms (default: 4 000) */
-  pollMs?: number;
-  /** Optional progress hook called every time a new confirmation is observed */
-  onProgress?: (currentConf: number) => void;
+type writeContractParams = {
+    signer: Signer;
+    method: string;
+    args?: any[];
+    overrides?: TransactionRequest
 }
 
 /**
@@ -30,15 +29,17 @@ interface WaitOpts {
  */
 export class GeniDex {
     public abi: any;
+    public iface!: Interface;
     public network!: NetworkConfig;
     public contract!: Contract;
-    public provider!: WebSocketProvider | JsonRpcProvider | Provider;
+    public provider!: WebSocketProvider | JsonRpcProvider;
     public address!: string;
     public markets!: Markets;
     public tokens!: Tokens;
     public balances!: Balances;
     public buyOrders!: BuyOrders;
     public sellOrders!: SellOrders;
+    public tx!: Tx;
     private verifiedProvider = false;
     private verifiedContract = false;
 
@@ -46,11 +47,12 @@ export class GeniDex {
     }
 
     async connect(
-        networkName: NetworkName,
-        provider: WebSocketProvider | JsonRpcProvider | Provider
+        networkName: NetworkName | string,
+        provider: WebSocketProvider | JsonRpcProvider
     ){
         await this.verifyProviderNetwork(networkName, provider);
         this.abi        = abi;
+        this.iface      = new Interface(this.abi);
         this.provider   = provider;
         this.network    = config.getNetwork(networkName);
         this.address    = this.network.contracts.GeniDex;
@@ -60,13 +62,14 @@ export class GeniDex {
         this.balances   = new Balances(this);
         this.buyOrders  = new BuyOrders(this);
         this.sellOrders = new SellOrders(this);
+        this.tx         = new Tx(this);
     }
 
     /**
      * Verifies that the provider is connected to the expected chain ID from this.network
      * @throws if the chain ID does not match
      */
-    async verifyProviderNetwork(networkName: NetworkName, provider: any): Promise<boolean> {
+    async verifyProviderNetwork(networkName: NetworkName | string, provider: any): Promise<boolean> {
         if(this.verifiedProvider) return true;
         const network = config.getNetwork(networkName)
 
@@ -142,13 +145,12 @@ export class GeniDex {
         return selectedIds;
     }
 
-    async writeContract(
-        signer: Signer,
-        method: string,
-        args: any[] = [],
-        overrides: Record<string, any> = {},
-        waitForConfirm: boolean = false
-    ): Promise<GeniDexTransactionResponse | undefined> {
+    async writeContract({
+        signer,
+        method,
+        args = [],
+        overrides = {}
+    }: writeContractParams ): Promise<GeniDexTransactionResponse | undefined> {
         const contract = new Contract(this.address, this.abi, signer);
         this.verifyMethodExists(contract, method);
         await Promise.all([
@@ -159,12 +161,13 @@ export class GeniDex {
         try {
             // const tx = await contract[method](...args, overrides);
             const tx = await contract.getFunction(method).send(...args, overrides);
-            (tx as GeniDexTransactionResponse).waitForConfirms = async (): Promise<TransactionReceipt>=>{
-                return await this.waitForConfirms(tx, method, args, {});
+            (tx as GeniDexTransactionResponse).waitForConfirms = async (): Promise<TransactionReceipt | undefined>=>{
+                return await this.waitForConfirms(tx, method, args, overrides, {});
+                // return await this.waitForConfirms1(tx, 1, method, args);
             };
             return (tx as GeniDexTransactionResponse);
         } catch (error) {
-            await this.revertError(error, method, args);
+            await this.revertError(error, method, args, overrides);
         }
     }
 
@@ -205,15 +208,27 @@ export class GeniDex {
         confirmations: number,
         method: string,
         args: any[] = []
-    ) {
+    ): Promise<TransactionReceipt | undefined> {
         try {
             const receipt = await tx.wait(confirmations);
+            // const receipt = await this.provider.waitForTransaction(tx.hash);
             if (receipt?.status === 1) {
                 return receipt;
             } else {
                 throw new Error(`Transaction reverted on-chain: ${tx.hash}`);
             }
         } catch (error: any) {
+            try{
+                await this.provider.call({
+                    ...tx,
+                    blockTag: error.receipt.blockNumber
+                });
+                // console.log('rawData', rawData);
+            }catch(error2: any){
+                // console.log('error2')
+                error2.receipt = error.receipt;
+                await this.revertError(error2, method, args);
+            }
             await this.revertError(error, method, args);
         }
     }
@@ -226,9 +241,10 @@ export class GeniDex {
         tx: ContractTransactionResponse,
         functionName: string,
         args?: any[],
+        overrides?: {},
         opts: WaitOpts = {},
     ) {
-        const {
+        let {
             confirmations = 1,
             timeoutMs = 120_000,
             pollMs = 1_000,
@@ -241,28 +257,20 @@ export class GeniDex {
         while (true) {
             // Try to fetch the mined receipt
             const receipt = await provider.getTransactionReceipt(tx.hash);
+            console.log('=================',receipt);
 
             if (receipt) {
                 // If mined but reverted (status === 0) → obtain and decode revert data
                 if (receipt.status === 0) {
-                    // Attempt to read revert bytes directly from the receipt object
-                    let rawData = (receipt as any).data;
-
-                    // console.log('rawData', receipt);
-                    // If the node did not include revert data, replay the tx at its block
-                    if (!rawData) {
-                        // console.log(tx);
-                        try{
-                            rawData = await provider.call({
-                                ...tx,
-                                blockTag: receipt.blockNumber
-                            });
-                        }catch(error: any){
-                            error.receipt = receipt;
-                            this.revertError(error, functionName, args);
-                        }
+                    try{
+                        await provider.call({
+                            ...tx,
+                            blockTag: receipt.blockNumber
+                        });
+                    }catch(error: any){
+                        error.receipt = receipt;
+                        await this.revertError(error, functionName, args, overrides);
                     }
-                    throw new Error( this.decodeRevertError(receipt) );
                 }
 
                 // Count confirmations
@@ -287,6 +295,9 @@ export class GeniDex {
             }
 
             // Sleep before the next poll
+            if(pollMs < 60_000){
+                pollMs += pollMs*20/100;
+            }
             await new Promise((r) => setTimeout(r, pollMs));
         }
     }
@@ -308,7 +319,7 @@ export class GeniDex {
      * @param err - The caught error object (usually from try/catch around tx).
      * @returns A formatted string with the error name and arguments, or undefined if cannot decode.
      */
-    decodeRevertError(err: unknown): string | undefined {
+    decodeRevertError(err: unknown): ErrorDescription | undefined {
         if ( typeof err !== "object" || err === null || !("data" in err) ) {
             return;
         }
@@ -325,8 +336,7 @@ export class GeniDex {
                 try {
                     const parsed: null | ErrorDescription = iface.parseError(data);
                     if (parsed) {
-                        const args = parsed.args?.map((a) => a.toString()).join(", ");
-                        return `${parsed.name}(${args})`;
+                        return parsed;
                     }
                 } catch (_) {
                     continue;
@@ -348,19 +358,35 @@ export class GeniDex {
      * @param err - The error object caught from a failed contract transaction.
      * @throws An Error containing the decoded or fallback message.
      */
-    async revertError(err: any, functionName: string, args?: any[]) {
-        if(err.code == 'CALL_EXCEPTION' && err.revert == null){
-            let invocation = {
-                method: functionName,
-                args: {}
-            };
-            if(args){
-                const argsObj = this.mapArgsToObject(functionName, args);
-                invocation.args = argsObj;
+    async revertError(err: any, functionName: string, args?: any[], overrides?:{}) {
+        // if(err.code == 'CALL_EXCEPTION'){
+            const fn = this.iface.getFunction(functionName);
+            if(fn){
+                let invocation = new ErrorDescription(fn, fn?.selector, args as Result);
+                // err.invocation = utils.errorDescriptionToString(invocation);
+                err.invocation = {
+                    name: invocation.name,
+                    signature: invocation.signature,
+                    args: invocation.args,
+                    selector: invocation.selector,
+                    message: utils.errorDescriptionToString(invocation),
+                    overrides
+                };
             }
-            err.invocation = invocation;
-            err.revert = this.decodeRevertError(err);
-        }
+            const decodedError = this.decodeRevertError(err);
+            if(decodedError){
+                err.reason = utils.errorDescriptionToString(decodedError);
+                // err.revert = utils.errorDescriptionToString(decodedError);
+                err.revert = {
+                    name: decodedError.name,
+                    signature: decodedError.signature,
+                    args: decodedError.args,
+                    selector: decodedError.selector,
+                    message: utils.errorDescriptionToString(decodedError)
+                };
+            }
+            err.message = utils.jsonToString(err);
+        // }
         throw err;
     }
 
@@ -374,6 +400,7 @@ export class GeniDex {
     mapArgsToObject(methodName: string, args: any[]): Record<string, any> {
         const iface = new Interface(this.abi);
         const fn = iface.getFunction(methodName);
+        console.log(fn);
         if (fn?.inputs.length !== args.length) {
             throw new Error(`Argument count mismatch for ${methodName}`);
         }
@@ -394,27 +421,27 @@ export class GeniDex {
         contract: Contract,
         method: string,
         args: any[],
-        overrides: any
+        overrides: any = {}
     ) {
         try {
             await contract.getFunction(method).staticCall(...args, overrides);
         } catch (error: any) {
-            await this.revertError(error, method, args);
+            await this.revertError(error, method, args, overrides);
         }
     }
 
     async pause(signer: Signer){
         const overrides = {
-            gasPrice: parseUnits('300', 'gwei')
+            // gasPrice: parseUnits('300', 'gwei')
         }
-        return await this.writeContract(signer, 'pause', [], overrides);
+        return await this.writeContract({signer, method: 'pause', args:[], overrides});
     }
 
     async unpause(signer: Signer){
         const overrides = {
-            gasPrice: parseUnits('300', 'gwei')
+            // gasPrice: parseUnits('300', 'gwei')
         }
-        return await this.writeContract(signer, 'unpause', [], overrides);
+        return await this.writeContract({signer, method: 'unpause', args:[], overrides});
     }
 
 }

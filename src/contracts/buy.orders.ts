@@ -1,7 +1,6 @@
 
-import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse } from 'ethers';
+import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
-import { ERC20 } from './erc20';
 import { OutputOrder, orderParams } from '../types';
 
 
@@ -38,7 +37,8 @@ export class BuyOrders {
     async placeBuyOrder({
         signer, marketId,
         normPrice, normQuantity,
-        referrer, waitForConfirm = false
+        referrer = ZeroAddress,
+        overrides = {}
     }: orderParams ): Promise<ContractTransactionResponse | undefined> {
         const sellOrderIds = await this.genidex.sellOrders.getMatchingSellOrderIds(
             marketId,
@@ -55,14 +55,8 @@ export class BuyOrders {
             referrer,
         ];
 
-        return await this.genidex.writeContract(signer, 'placeBuyOrder', args, {}, waitForConfirm);
-
-        /*try {
-            const tx = await contract.placeBuyOrder(...args);
-            return waitForConfirm ? await tx.wait() : tx;
-        } catch (error) {
-            await this.genidex.revertError(error, "placeBuyOrder", args);
-        }*/
+        const method = 'placeBuyOrder';
+        return await this.genidex.writeContract({signer, method, args, overrides});
     }
 
     /**

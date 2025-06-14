@@ -1,4 +1,4 @@
-import { ethers, Provider, BigNumberish, toBigInt, formatUnits } from "ethers";
+import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription } from "ethers";
 import { constants } from "./constants";
 
 export class Utils{
@@ -98,6 +98,45 @@ export class Utils{
     intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return `${intPart}.${decPart}`;
   }
+
+  jsonToString(obj: any){
+    return JSON.stringify(obj, (key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
+  }
+
+  errorDescriptionToString(error: ErrorDescription){
+    const errorFragment = error.fragment;
+    const paramNames = errorFragment.inputs.map(input => input.name);
+    const paramValues = error.args;
+
+    const paramPairs = paramNames.map((name, index) => {
+      const value = paramValues[index];
+      let displayValue;
+      if (typeof value === 'bigint') {
+        displayValue = value.toString();
+      } else if (typeof value === 'object') {
+        displayValue = JSON.stringify(value);
+      } else {
+        displayValue = String(value);
+      }
+      return `${name}: ${displayValue}`;
+    });
+
+    return `${error.name}(${paramPairs.join(', ')})`;
+  }
+
+  logError(error: any){
+    console.error(error);
+    const objError: any = {};
+    for (const key in error) {
+        objError[key] = error[key];
+    }
+    // console.error(objError);
+    if(error.invocation && error.invocation.message) console.error('call:', error.invocation.message);
+    if(error.reason) console.error('revert:', error.reason);
+  }
+
 }
 
 export const utils = new Utils;

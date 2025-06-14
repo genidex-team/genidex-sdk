@@ -17,7 +17,7 @@ export default {
     {
       file: 'dist/index.esm.js',
       format: 'esm',
-      sourcemap: true,
+      sourcemap: true
     },
     {
       file: 'dist/index.umd.js',

@@ -1,4 +1,4 @@
-import { BigNumberish, ContractTransactionReceipt, ContractTransactionResponse, Signer, TransactionReceipt } from "ethers";
+import { AddressLike, BigNumberish, ContractTransactionReceipt, ContractTransactionResponse, Signer, TransactionReceipt, TransactionRequest } from "ethers";
 
 
 export enum NetworkName {
@@ -75,10 +75,17 @@ export interface orderParams{
     marketId: BigNumberish;
     normPrice: BigNumberish;
     normQuantity: BigNumberish;
-    referrer: string;
-    waitForConfirm?: boolean;
+    referrer?: AddressLike;
+    overrides?: TransactionRequest;
 }
 
 export interface GeniDexTransactionResponse extends ContractTransactionResponse {
-  waitForConfirms(): Promise<TransactionReceipt>;
+  waitForConfirms(): Promise<TransactionReceipt | undefined>;
+}
+
+export interface WaitOpts {
+  confirmations?: number;
+  timeoutMs?: number;
+  pollMs?: number;
+  onProgress?: (currentConf: number) => void;
 }
