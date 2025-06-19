@@ -105,6 +105,10 @@ export class Utils{
     );
   }
 
+  bigintReplacer(key:any, value:any) {
+    return typeof value === "bigint" ? value.toString() : value;
+  }
+
   errorDescriptionToString(error: ErrorDescription){
     const errorFragment = error.fragment;
     const paramNames = errorFragment.inputs.map(input => input.name);
@@ -116,7 +120,7 @@ export class Utils{
       if (typeof value === 'bigint') {
         displayValue = value.toString();
       } else if (typeof value === 'object') {
-        displayValue = JSON.stringify(value);
+        displayValue = JSON.stringify(value, this.bigintReplacer);
       } else {
         displayValue = String(value);
       }

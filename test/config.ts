@@ -4,14 +4,15 @@ import { NetworkName } from "../src";
 
 class Config {
 
-    rpc = 'http://127.0.0.1:8545';
+    // rpc = 'http://127.0.0.1:8545';
+    rpc = 'https://rpc.genidex.net';
     provider = new ethers.JsonRpcProvider(this.rpc);
 
     // rpc = 'ws://127.0.0.1:8545';
     // provider = new ethers.WebSocketProvider(this.rpc);
 
 
-    networkName = NetworkName.Localhost;
+    networkName = NetworkName.Geni;
 
     constructor(){
 

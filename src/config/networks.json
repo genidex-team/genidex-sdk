@@ -10,9 +10,9 @@
   "geni": {
     "chainId": 31339,
     "contracts": {
-      "GeniDex": "0x99989d6188e23EB31dCAFE5be8AE097346C5b999",
+      "GeniDex": "0x671E6708FBE36A1995765a78Eb8246481f4B78bE",
       "GeniToken": "0x999bCDA71acd8feAE9C42edd18a9B960D3EC3999",
-      "GeniRewarder": "0x999Cd76a2249556A1C24333404c1f39035fB5999"
+      "GeniRewarder": "0x4826533B4897376654Bb4d4AD88B7faFD0C98528"
     }
   },
   "sepolia": {
