@@ -12,7 +12,7 @@ let provider = config.provider;
 async function main(){
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
-    await genidex.connect(NetworkName.Geni, provider);
+    await genidex.connect(config.networkName, provider);
     const marketId = 1;
     const normPrice = parseEther("1");
     const normQuantity = parseEther("20")

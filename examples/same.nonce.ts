@@ -13,7 +13,7 @@ let provider = config.provider;
 async function main(){
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
-    await genidex.connect(NetworkName.Localhost, provider);
+    await genidex.connect(config.networkName, provider);
 
     // Check balance
     const balance1 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)

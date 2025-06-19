@@ -12,7 +12,7 @@ let provider = config.provider;
 async function main(){
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
-    await genidex.connect(NetworkName.Localhost, provider);
+    await genidex.connect(config.networkName, provider);
 
 
     await provider.send("evm_setAutomine", [true]);

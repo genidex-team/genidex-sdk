@@ -13,7 +13,7 @@ async function main(){
     console.log('get.orders')
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
-    await genidex.connect(NetworkName.Geni, provider);
+    await genidex.connect(config.networkName, provider);
     const marketId = 5;
 
     // buyOrders
