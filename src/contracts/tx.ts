@@ -1,4 +1,4 @@
-import { Contract, Overrides, ErrorDescription, Interface, JsonRpcProvider, TransactionDescription, TransactionReceipt, TransactionResponse } from "ethers";
+import { Contract, Overrides, ErrorDescription, Interface, JsonRpcProvider, TransactionDescription, TransactionReceipt, TransactionResponse, LogDescription, Log } from "ethers";
 import { GeniDex } from "./genidex";
 import { WaitOpts } from "../types";
 import { utils } from "../utils";
@@ -143,10 +143,45 @@ export class Tx {
         return decoded;
     }
 
+    decodeLogs(logs: readonly Log[]){
+        const decodedEvents = [];
+        for (const log of logs) {
+            try {
+                const parsed = this.iface.parseLog(log);
+                if(!parsed) return;
+                decodedEvents.push({
+                    name: parsed.name,
+                    signature: parsed.signature,
+                    args: parsed.args,
+                    argsObject: this.argsLogToObject(parsed),
+                    logIndex: log.index,
+                    transactionHash: log.transactionHash,
+                    address: log.address,
+                });
+            } catch (e) {
+                continue;
+            }
+        }
+
+        return decodedEvents;
+    }
+
     decodeError(error: any): ErrorDescription | null{
         if(!error.data || error.data == '0x') return null;
         // log(error);
         const decoded = this.iface.parseError(error.data)
         return decoded;
     }
+
+    argsLogToObject(parsed: LogDescription): Record<string, any> {
+        const obj: Record<string, any> = {};
+
+        parsed.fragment.inputs.forEach((input, index) => {
+            const key = input.name && input.name.length ? input.name : index.toString();
+            obj[key] = parsed.args[index];
+        });
+
+        return obj;
+    }
+
 }
