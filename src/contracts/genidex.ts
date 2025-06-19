@@ -385,7 +385,15 @@ export class GeniDex {
                     message: utils.errorDescriptionToString(decodedError)
                 };
             }
-            err.message = utils.jsonToString(err);
+            if(err.invocation?.message){
+                err.message = 'GeniDex Error:\n' + err.invocation.message;
+            }
+            if(err.revert?.message){
+                err.message += '\n'+err.revert.message;
+            }
+            if(!err.revert || !err.revert.message){
+                err.message = utils.jsonToString(err);
+            }
         // }
         throw err;
     }

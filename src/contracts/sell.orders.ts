@@ -1,7 +1,7 @@
 
 import { BigNumberish, Contract, Signer, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
-import { OutputOrder, orderParams } from '../types';
+import { OutputOrder, cancelOrderParams, orderParams } from '../types';
 
 export class SellOrders {
     genidex!: GeniDex;
@@ -26,8 +26,7 @@ export class SellOrders {
      * @param params.normPrice - Price per unit (normalized to 18 decimals).
      * @param params.normQuantity - Quantity to sell (base token, 18 decimals).
      * @param params.referrer - Address of the referrer, or zero address.
-     * @param params.waitForConfirm - Optional. Whether to wait for tx confirmation.
-     * @returns TransactionResponse or receipt if `waitForConfirm` is true.
+     * @returns TransactionResponse.
      */
     async placeSellOrder({
         signer,
@@ -54,34 +53,69 @@ export class SellOrders {
     }
 
     /**
+     * Cancel a sell order on the specified market.
+     *
+     * @param signer - The signer (wallet) performing the cancellation.
+     * @param marketId - The ID of the market where the sell order exists.
+     * @param orderIndex - The index of the sell order to cancel.
+     * @returns The transaction response object.
+     */
+    async cancelSellOrder({
+        signer,
+        marketId,
+        orderIndex,
+        overrides = {}
+    }: cancelOrderParams): Promise<TransactionResponse | undefined> {
+        const args = [marketId, orderIndex];
+        const method = 'cancelSellOrder';
+        return await this.genidex.writeContract({signer, method, args, overrides});
+    }
+
+    async getFilledSellOrderIds(marketId: BigNumberish, limit: BigNumberish=1000) {
+        const typeOrder = 1;// buy: 0, sell: 1
+        const rawIds: bigint[] = await this.contract["getFilledOrders"](typeOrder, marketId, limit);
+        // console.log(rawOrders);
+        return rawIds.map(id => BigInt(id.toString()));
+    }
+
+    /**
      * Returns a random ID of a buy order that has been fully filled (quantity == 0).
      *
      * @param marketId - ID of the market
      * @returns Random filled order ID (bigint) or null if none found
      */
     async randomFilledSellOrderID(marketId: BigNumberish): Promise<bigint | null> {
-        const marketSellOrders = await this.getMarketSellOrders(marketId);
-        const filledSellOrderIDs = this.genidex.getFilledOrderIDs(marketSellOrders);
+        // const filledSellOrderIDs = this.genidex.getFilledOrderIDs(marketSellOrders);
+        const filledSellOrderIDs = await this.getFilledSellOrderIds(marketId);
         const random = Math.floor(Math.random() * filledSellOrderIDs.length);
         const filledSellOrderId = filledSellOrderIDs[random];
         return filledSellOrderId || 0n;
     }
 
-    /**
-     * Fetch list of sell orders for a market.
-     *
-     * @param marketId - ID of the market
-     * @returns Array of matching OutputOrder objects
-     */
-    async getMarketSellOrders(marketId: BigNumberish): Promise<OutputOrder[]> {
-        const rawOrders = await this.contract["getSellOrders(uint256)"](marketId);
-        // console.log(rawOrders);
+    async getAllSellOrders(marketId: BigNumberish){
+        const rawOrders = [];
+        const ordersTotal = await this.getSellOrdersLength(marketId);
+        const pageSize = 3700;
+        let offset = 0;
+
+        const typeOrder = 1;// buy: 0, sell: 1
+        while (offset < ordersTotal) {
+            const page = await this.contract["getOrders"](typeOrder, marketId, offset, pageSize);
+            offset += pageSize;
+            rawOrders.push(...page);
+        }
+        // return allOrders;
         return rawOrders.map((o: any, index: number) => ({
             id: BigInt(index.toString()),
             trader: o.trader,
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
         }));
+    }
+
+    async getSellOrdersLength(marketId: BigNumberish): Promise<bigint> {
+        const sellOrderLength = await this.contract["getSellOrdersLength"](marketId);
+        return sellOrderLength;
     }
 
     /**
@@ -130,30 +164,6 @@ export class SellOrders {
         const sortedSellOrders: OutputOrder[] = this.sortSellOrders(sellOrders);
         const sellOrderIds = this.genidex.getMatchingOrderIds(sortedSellOrders, normQuantity);
         return sellOrderIds;
-    }
-
-    /**
-     * Cancel a sell order on the specified market.
-     *
-     * @param signer - The signer (wallet) performing the cancellation.
-     * @param marketId - The ID of the market where the sell order exists.
-     * @param orderIndex - The index of the sell order to cancel.
-     * @returns The transaction response object.
-     */
-    async cancelSellOrder(
-        signer: Signer,
-        marketId: BigNumberish,
-        orderIndex: BigNumberish,
-        waitForConfirm?: boolean
-    ): Promise<TransactionResponse | undefined> {
-        const contract = this.genidex.getContract(signer);
-        const args = [marketId, orderIndex]
-        try{
-            const tx = await contract.cancelSellOrder(...args);
-            return waitForConfirm ? await tx.wait() : tx;
-        }catch(error){
-            await this.genidex.revertError(error, 'cancelSellOrder', args);
-        }
     }
 
 }

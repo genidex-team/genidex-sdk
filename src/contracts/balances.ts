@@ -123,7 +123,7 @@ export class Balances {
     }: depositTokenParams
     ): Promise<TransactionResponse | TransactionReceipt | undefined | null>{
         if (!normAmount || BigInt(normAmount) <= 0n) {
-            throw new Error("normalizedAmount must be > 0");
+            throw new Error("normAmount must be > 0");
         }
         const erc20 = new ERC20(tokenAddress, this.genidex.provider);
         const token = await this.genidex.tokens.getTokenInfo(tokenAddress);
