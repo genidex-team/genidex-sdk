@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "Node",
     "declaration": true,
     "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "./",
+    "mapRoot": "./dist",
     "outDir": "dist",
     "esModuleInterop": true,
     "strict": true,

@@ -70,7 +70,6 @@ async function sendTx1(nonce: any){
                 //     console.log(error2.info.payload)
                 // }
             }
-            
         }else{
             console.log(error);
         }

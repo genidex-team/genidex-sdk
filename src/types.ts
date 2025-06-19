@@ -1,4 +1,4 @@
-import { AddressLike, BigNumberish, ContractTransactionReceipt, ContractTransactionResponse, Signer, TransactionReceipt, TransactionRequest } from "ethers";
+import { AddressLike, BigNumberish, ContractTransactionReceipt, ContractTransactionResponse, Overrides, Signer, TransactionReceipt, TransactionRequest } from "ethers";
 
 
 export enum NetworkName {
@@ -17,6 +17,7 @@ export enum NetworkName {
   Sepolia     = "sepolia",
   Hardhat     = "hardhat",
   Localhost   = "localhost",
+  Geni        = "geni",
 }
 
 export interface ContractAddresses {
@@ -76,7 +77,13 @@ export interface orderParams{
     normPrice: BigNumberish;
     normQuantity: BigNumberish;
     referrer?: AddressLike;
-    overrides?: TransactionRequest;
+    overrides?: Overrides;
+}
+export interface  cancelOrderParams {
+  signer: Signer,
+  marketId: BigNumberish,
+  orderIndex: BigNumberish,
+  overrides?: Overrides
 }
 
 export interface GeniDexTransactionResponse extends ContractTransactionResponse {
