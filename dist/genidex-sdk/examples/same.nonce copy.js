@@ -1,0 +1,85 @@
+import { GeniDex, NetworkName, constants, utils } from "../src/index";
+import { ethers, formatEther, parseEther } from "ethers";
+import { config } from "../test/config";
+let genidex = new GeniDex();
+let signer;
+let signerAddress;
+const ETH_ADDRESS = constants.ETH_ADDRESS;
+let provider = config.provider;
+async function main() {
+    signer = await config.getSigner();
+    signerAddress = await signer.getAddress();
+    await genidex.connect(NetworkName.Localhost, provider);
+    // Check balance
+    const balance1 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS);
+    console.log('Balance1', formatEther(balance1));
+    // stop mine
+    // await provider.send("evm_setAutomine", [true]);
+    // await new Promise((r) => setTimeout(r, 1_000));
+    await provider.send("evm_setAutomine", [false]);
+    const nonce = await provider.getTransactionCount(signerAddress);
+    console.log('nonce', nonce);
+    await sendTx1(nonce);
+    await sendTx2(nonce);
+    // await new Promise((r) => setTimeout(r, 5_000));
+    console.log('evm_setAutomine', true);
+    await provider.send("evm_setAutomine", [true]);
+}
+async function sendTx1(nonce) {
+    let tx;
+    try {
+        tx = await genidex.balances.depositEth({
+            signer,
+            normAmount: parseEther("1"),
+            overrides: {
+                gasPrice: ethers.parseUnits("20", "gwei"),
+                nonce
+            }
+        });
+    }
+    catch (error) {
+        console.error("\n\n========== send tx1 fail ==============");
+        // console.log(error);
+        // console.log(error.payload)
+        utils.logError(error);
+    }
+    if (tx) {
+        genidex.tx.wait(tx.hash).then((receipt) => {
+            console.log("\n\n========== tx1 confirmed ==============");
+            console.log('receipt?.status:', receipt?.status);
+        }).catch((error) => {
+            // console.log(error);
+            utils.logError(error);
+        });
+    }
+}
+async function sendTx2(nonce) {
+    let tx;
+    try {
+        tx = await genidex.balances.depositEth({
+            signer,
+            normAmount: parseEther("1"),
+            overrides: {
+                gasPrice: ethers.parseUnits("40", "gwei"),
+                nonce
+            }
+        });
+    }
+    catch (error) {
+        console.error("\n\n========== send tx2 fail ==============");
+        // console.log(error);
+        // console.log(error.payload)
+        utils.logError(error);
+    }
+    if (tx) {
+        genidex.tx.wait(tx.hash).then((receipt) => {
+            console.log("\n\n========== tx2 confirmed ==============");
+            console.log('receipt?.status:', receipt?.status);
+        }).catch((error) => {
+            // console.log(error);
+            utils.logError(error);
+        });
+    }
+}
+main();
+//# sourceMappingURL=same.nonce%20copy.js.map
