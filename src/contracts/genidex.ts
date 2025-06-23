@@ -4,7 +4,9 @@ import { BigNumberish, Contract,
     Provider, Signer, TransactionReceipt, TransactionResponse, 
     WebSocketProvider, parseUnits,
     ContractTransactionReceipt, TransactionRequest,
-    Result} from 'ethers';
+    Result,
+    BrowserProvider,
+    formatEther} from 'ethers';
 import { abi } from '../../../genidex_contract/artifacts/contracts/GeniDex.sol/GeniDex.json';
 import { Markets } from './markets';
 import { Balances } from './balances';
@@ -32,7 +34,7 @@ export class GeniDex {
     public iface!: Interface;
     public network!: NetworkConfig;
     public contract!: Contract;
-    public provider!: WebSocketProvider | JsonRpcProvider;
+    public provider!: WebSocketProvider | JsonRpcProvider | BrowserProvider;
     public address!: string;
     public markets!: Markets;
     public tokens!: Tokens;
@@ -40,6 +42,7 @@ export class GeniDex {
     public buyOrders!: BuyOrders;
     public sellOrders!: SellOrders;
     public tx!: Tx;
+    public apiSocket: any;
     private verifiedProvider = false;
     private verifiedContract = false;
 
@@ -48,21 +51,36 @@ export class GeniDex {
 
     async connect(
         networkName: NetworkName | string,
-        provider: WebSocketProvider | JsonRpcProvider
+        providerOrRpc: WebSocketProvider | JsonRpcProvider | BrowserProvider | string,
+        apiSocket?: any
     ){
-        await this.verifyProviderNetwork(networkName, provider);
+        if(typeof providerOrRpc == 'string'){
+            this.provider = new JsonRpcProvider(providerOrRpc);
+        }else{
+            this.provider   = providerOrRpc;
+        }
+        await this.verifyProviderNetwork(networkName, this.provider);
         this.abi        = abi;
         this.iface      = new Interface(this.abi);
-        this.provider   = provider;
+
         this.network    = config.getNetwork(networkName);
         this.address    = this.network.contracts.GeniDex;
-        this.contract   = new Contract(this.address, abi, provider);
+        this.contract   = new Contract(this.address, abi, this.provider);
         this.markets    = new Markets(this);
         this.tokens     = new Tokens(this);
         this.balances   = new Balances(this);
         this.buyOrders  = new BuyOrders(this);
         this.sellOrders = new SellOrders(this);
         this.tx         = new Tx(this);
+        this.apiSocket  = apiSocket;
+    }
+
+    async emit(event: any, data: any) {
+        return new Promise((resolve) => {
+            this.apiSocket.emit(event, data, (response: any) => {
+                resolve(response);
+            });
+        });
     }
 
     /**
@@ -95,6 +113,10 @@ export class GeniDex {
     getContract(signer?: Signer): Contract {
         const runner = signer ?? this.provider;
         return new Contract(this.address, this.abi, runner);
+    }
+
+    async getSigner(i: number){
+        return this.provider.getSigner(i);
     }
 
     /**
@@ -192,7 +214,7 @@ export class GeniDex {
      * @throws if chainId mismatch
      */
     async verifySignerNetwork(signer: Signer): Promise<void> {
-        if (!signer.provider) return;
+        if (!signer || !signer.provider) return;
 
         const signerChainId = (await signer.provider.getNetwork()).chainId;
         if (signerChainId !== this.network.chainId) {
@@ -451,5 +473,7 @@ export class GeniDex {
         }
         return await this.writeContract({signer, method: 'unpause', args:[], overrides});
     }
+
+    
 
 }

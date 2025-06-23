@@ -1,7 +1,8 @@
 
-import { BigNumberish, Contract, Signer, TransactionResponse, ZeroAddress } from 'ethers';
+import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
 import { OutputOrder, cancelOrderParams, orderParams } from '../types';
+import { utils } from '../utils';
 
 export class SellOrders {
     genidex!: GeniDex;
@@ -10,6 +11,33 @@ export class SellOrders {
     constructor(_genidex: GeniDex) {
         this.genidex = _genidex;
         this.contract = this.genidex.contract;
+    }
+
+    async getSellOrderArgs(
+        marketId: BigNumberish,
+        normPrice: BigNumberish,
+        normQuantity: BigNumberish
+    ): Promise<{filledSellOrderID: any, matchingBuyOrderIds: any}>{
+        let args: any = {};
+        if(this.genidex.apiSocket){
+            args = await this.genidex.emit('get-order-args', {
+                network: this.genidex.network.name,
+                type: 'sell',
+                marketId: marketId.toString(),
+                price: normPrice.toString(),
+                quantity: normQuantity.toString()
+            });
+        }else{
+            const openBuyOrders = await this.genidex.buyOrders.getOpenOrders(marketId);
+            args.matchingBuyOrderIds = await this.genidex.buyOrders.getMatchingBuyOrderIds(
+                openBuyOrders,
+                normPrice,
+                normQuantity
+            );
+            args.filledSellOrderID = await this.randomFilledSellOrderID(marketId);
+        }
+        console.log(args)
+        return args as Promise<{filledSellOrderID: any, matchingBuyOrderIds: any}>;
     }
 
     /**
@@ -36,16 +64,19 @@ export class SellOrders {
         referrer = ZeroAddress,
         overrides = {}
     }: orderParams): Promise<TransactionResponse|undefined> {
-        const buyOrders = this.genidex.buyOrders;
-        const buyOrderIds = await buyOrders.getMatchingBuyOrderIds(marketId, normPrice, normQuantity);
-        const filledSellOrderId = await this.randomFilledSellOrderID(marketId);
+        // const buyOrders = this.genidex.buyOrders;
+        // const buyOrderIds = await buyOrders.getMatchingBuyOrderIds(marketId, normPrice, normQuantity);
+        // const filledSellOrderId = await this.randomFilledSellOrderID(marketId);
         // console.log(sellOrders);
+        const {filledSellOrderID, matchingBuyOrderIds} = await this.getSellOrderArgs(
+            marketId, normPrice, normQuantity
+        )
         const args = [
             marketId,
             normPrice,
             normQuantity,
-            filledSellOrderId,
-            buyOrderIds,
+            filledSellOrderID,
+            matchingBuyOrderIds,
             referrer
         ]
         const method = 'placeSellOrder';
@@ -92,7 +123,7 @@ export class SellOrders {
         return filledSellOrderId || 0n;
     }
 
-    async getAllSellOrders(marketId: BigNumberish){
+    async getAllSellOrders(marketId: BigNumberish): Promise<OutputOrder[]>{
         const rawOrders = [];
         const ordersTotal = await this.getSellOrdersLength(marketId);
         const pageSize = 3700;
@@ -104,6 +135,7 @@ export class SellOrders {
             offset += pageSize;
             rawOrders.push(...page);
         }
+        // console.log(rawOrders);
         // return allOrders;
         return rawOrders.map((o: any, index: number) => ({
             id: BigInt(index.toString()),
@@ -111,6 +143,12 @@ export class SellOrders {
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
         }));
+    }
+
+    async getOpenOrders(marketId: BigNumberish): Promise<OutputOrder[]>{
+        const allOrders = await this.getAllSellOrders(marketId);
+        const filteredOrders = allOrders.filter(order => order.quantity > 0n);
+        return this.sortSellOrders(filteredOrders);
     }
 
     async getSellOrdersLength(marketId: BigNumberish): Promise<bigint> {
@@ -125,8 +163,8 @@ export class SellOrders {
      * @param maxPrice - Max acceptable price (normalized to 18 decimals)
      * @returns Array of matching OutputOrder objects
      */
-    async getSellOrders(marketId: BigNumberish, maxPrice: BigNumberish): Promise<OutputOrder[]> {
-        const rawOrders = await this.contract["getSellOrders(uint256,uint256)"](marketId, maxPrice);
+    async getSellOrders(marketId: BigNumberish, maxPrice: BigNumberish, limit: BigNumberish=100): Promise<OutputOrder[]> {
+        const rawOrders = await this.contract["getSellOrders"](marketId, maxPrice, limit);
         return rawOrders.map((o: any) => ({
             id: BigInt(o.id.toString()),
             trader: o.trader,
@@ -156,14 +194,39 @@ export class SellOrders {
      * @returns An array of matching sell order IDs, ordered by best price.
      */
     async getMatchingSellOrderIds(
-        marketId: BigNumberish,
+        allSellOrders: OutputOrder[],
         normPrice: BigNumberish,
         normQuantity: BigNumberish
     ){
-        const sellOrders: OutputOrder[] = await this.getSellOrders(marketId, normPrice);
-        const sortedSellOrders: OutputOrder[] = this.sortSellOrders(sellOrders);
-        const sellOrderIds = this.genidex.getMatchingOrderIds(sortedSellOrders, normQuantity);
+        const sortedSellOrders: OutputOrder[] = this.sortSellOrders(allSellOrders);
+        // console.log({
+        //     allSellOrders
+        //     // sortedOrders: utils.formatOrders(sortedOrders)
+        // })
+        const sellOrderIds = this.filterSellOrderIds(sortedSellOrders, normPrice, normQuantity);
         return sellOrderIds;
+    }
+
+    filterSellOrderIds(
+        sortedOrders: OutputOrder[],
+        normPrice: BigNumberish,
+        normQuantity: BigNumberish
+    ): BigNumberish[] {
+        const selectedIds: BigNumberish[] = [];
+        let total = 0n;
+        const buyQuantity = getBigInt(normQuantity);
+        const buyPrice = getBigInt(normPrice);
+
+        for (const sellOrder of sortedOrders) {
+            if (sellOrder.price > buyPrice) break;
+            if (sellOrder.quantity <= 0n ) continue;
+
+            selectedIds.push(sellOrder.id);
+            total += sellOrder.quantity;
+            if (total >= buyQuantity) break;
+        }
+
+        return selectedIds;
     }
 
 }

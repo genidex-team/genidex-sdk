@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc && rollup -c",
     "dev": "tsc --watch & rollup -c -w",
-    "examples": "nodemon --watch ./src --watch ./examples --ext ts,json,mjs,js --exec 'clear && clear && ts-node' --project tsconfig.dev.json",
+    "examples": "nodemon --watch ./src --watch ./examples --ext ts,json,mjs,js --exec 'clear && ts-node' --project tsconfig.dev.json",
     "docs": "typedoc",
     "dev_docs": "nodemon --watch ./src --watch typedoc.json --ext .ts,.json --exec typedoc",
     "docs_server": "live-server ./docs/out --open=/ --watch=./docs/out",
@@ -41,6 +41,7 @@
   "dependencies": {
     "@genidex/logger": "file:../logger",
     "ethers": "^6.14.3",
+    "socket.io-client": "^4.8.1",
     "source-map-support": "^0.5.21"
   }
 }

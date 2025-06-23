@@ -1,5 +1,6 @@
-import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription } from "ethers";
+import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther } from "ethers";
 import { constants } from "./constants";
+import { OutputOrder } from "./types";
 
 export class Utils{
 
@@ -118,7 +119,7 @@ export class Utils{
       const value = paramValues[index];
       let displayValue;
       if (typeof value === 'bigint') {
-        displayValue = value.toString();
+        displayValue = formatEther(value);
       } else if (typeof value === 'object') {
         displayValue = JSON.stringify(value, this.bigintReplacer);
       } else {
@@ -140,6 +141,30 @@ export class Utils{
     if(error.invocation && error.invocation.message) console.error('call:', error.invocation.message);
     if(error.reason) console.error('revert:', error.reason);
   }
+
+  formatBigIntsToEther(obj: Record<string, any>): Record<string, any> {
+    const result: Record<string, any> = {};
+    for (const key in obj) {
+        const value = obj[key];
+
+        if (typeof value === 'bigint') {
+            result[key] = formatEther(value);
+        } else {
+            result[key] = value;
+        }
+    }
+    return result;
+  }
+
+  formatOrders(orders: OutputOrder[]) {
+    return orders.map(order => ({
+      id: order.id,
+      trader: order.trader,
+      price: formatEther(order.price),
+      quantity: formatEther(order.quantity),
+    })
+  );
+}
 
 }
 

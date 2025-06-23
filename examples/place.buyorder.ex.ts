@@ -14,20 +14,20 @@ async function main(){
     signerAddress = await signer.getAddress();
     await genidex.connect(config.networkName, provider);
     const marketId = 1;
-    const normPrice = parseEther("1");
-    const normQuantity = parseEther("20")
 
     const market = await genidex.markets.getMarket(marketId);
     // console.log(market);
     const {quoteAddress} = market;
 
-    await genidex.balances.depositToken({
+    /*await genidex.balances.depositToken({
         signer,
         tokenAddress: quoteAddress,
         normAmount: parseEther("10000"),
         normApproveAmount: parseEther("10000")
-    });
+    });*/
 
+    const normPrice = parseEther("0.099");
+    const normQuantity = parseEther("199231.9")
     const tx = await genidex.buyOrders.placeBuyOrder({
         signer,
         marketId,
@@ -36,11 +36,12 @@ async function main(){
     })
 
     const receipt = await genidex.tx.wait(tx?.hash);
-    console.log('\n\nreceipt', receipt);
+    
     // console.log(receipt?.logs);
     if(receipt){
-        const logs = genidex.tx.decodeLogs(receipt.logs);
-        console.log('\n\ndecodeLogs', logs)
+        console.log('\n\nreceipt', receipt.hash);
+        const logs: any = genidex.tx.decodeLogs(receipt.logs);
+        console.log('\n\ndecodeLogs', logs[0].argsObject)
     }
 
 }

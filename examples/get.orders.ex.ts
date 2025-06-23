@@ -14,24 +14,31 @@ async function main(){
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
     await genidex.connect(config.networkName, provider);
-    const marketId = 5;
+    const marketId = 1;
 
     // buyOrders
     console.time();
-    const buyOrders = await genidex.buyOrders.getAllBuyOrders(marketId);
+    const buyOrders = await genidex.buyOrders.getOpenOrders(marketId);
     console.log('buyOrders', buyOrders.length);
     console.timeEnd()
+    console.log({
+        buyOrders: utils.formatOrders(buyOrders)
+    })
+    // return;
 
     // sellOrders
     console.time();
-    const sellOrders = await genidex.sellOrders.getAllSellOrders(marketId);
+    const sellOrders = await genidex.sellOrders.getOpenOrders(marketId);
     console.log('sellOrders', sellOrders.length);
     console.timeEnd()
+    console.log({
+        sellOrders: utils.formatOrders(sellOrders)
+    })
 
     // filledBuyOrders
     console.time();
     const filledBuyOrders = await genidex.buyOrders.getFilledBuyOrderIds(marketId);
-    console.log('filledBuyOrders', filledBuyOrders);
+    console.log('filledBuyOrders', filledBuyOrders.length);
     console.timeEnd()
 
     // randomFilledBuyOrderID

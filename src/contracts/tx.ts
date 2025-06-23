@@ -149,7 +149,7 @@ export class Tx {
             try {
                 const parsed = this.iface.parseLog(log);
                 if(!parsed) return;
-                decodedEvents.push({
+                const decodedEvent: any = {
                     name: parsed.name,
                     signature: parsed.signature,
                     args: parsed.args,
@@ -157,7 +157,8 @@ export class Tx {
                     logIndex: log.index,
                     transactionHash: log.transactionHash,
                     address: log.address,
-                });
+                }
+                decodedEvents.push(decodedEvent);
             } catch (e) {
                 continue;
             }
