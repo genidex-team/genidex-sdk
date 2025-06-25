@@ -37,7 +37,9 @@ export class Tokens {
      * ]
      */
     async getTokensInfo(tokenAddresses: string[]): Promise<TokenInfo[]> {
-        const rawResults = await this.contract.getTokensInfo(tokenAddresses);
+
+        // const rawResults = await this.contract.getTokensInfo(tokenAddresses);
+        const rawResults = await this.genidex.readContract('getTokensInfo', [tokenAddresses]);
         return rawResults.map((item: any) => ({
             tokenAddress: item.tokenAddress,
             symbol: item.symbol,

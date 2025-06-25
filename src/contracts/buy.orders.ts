@@ -138,6 +138,7 @@ export class BuyOrders {
             trader: o.trader,
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
+            blockNumber: 0n
         }));
     }
 

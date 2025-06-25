@@ -1,4 +1,4 @@
-import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther } from "ethers";
+import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther, parseUnits } from "ethers";
 import { constants } from "./constants";
 import { OutputOrder } from "./types";
 
@@ -157,14 +157,19 @@ export class Utils{
   }
 
   formatOrders(orders: OutputOrder[]) {
-    return orders.map(order => ({
-      id: order.id,
-      trader: order.trader,
-      price: formatEther(order.price),
-      quantity: formatEther(order.quantity),
-    })
-  );
-}
+      return orders.map(order => ({
+        id: order.id,
+        trader: order.trader,
+        price: formatEther(order.price),
+        quantity: formatEther(order.quantity),
+      })
+    );
+  }
+
+  parseUnits(amount: number | string){
+    const strAmount = amount.toString();
+    return parseUnits(strAmount, 8);
+  }
 
 }
 

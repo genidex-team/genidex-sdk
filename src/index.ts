@@ -6,6 +6,7 @@ export * from './contracts/balances';
 export * from './contracts/tokens';
 export * from './contracts/buy.orders';
 export * from './contracts/sell.orders';
+export * from './contracts/events';
 export * from "./contracts/erc20";
 export * from "./constants";
 

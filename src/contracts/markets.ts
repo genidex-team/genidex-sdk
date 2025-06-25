@@ -3,7 +3,7 @@ import { BigNumberish, Contract, Signer, TransactionResponse } from 'ethers';
 import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
 import { utils } from '../utils';
-import { Market } from '../types';
+import { Market, MarketMap } from '../types';
 
 export class Markets {
     genidex!: GeniDex;
@@ -18,10 +18,10 @@ export class Markets {
      * Fetch all existing markets and return them as an object indexed by market ID.
      * @returns A Promise resolving to a record of markets keyed by market ID.
      */
-    async getAllMarkets(): Promise<Record<string, Market> | undefined> {
+    async getAllMarkets(): Promise<MarketMap> {
+        const marketMap: MarketMap = {};
         try{
             const rawMarkets = await this.genidex.readContract('getAllMarkets');
-            const marketMap: Record<string, Market> = {};
             for (const m of rawMarkets) {
                 const id = BigInt(m.id).toString();
                 marketMap[id] = {
@@ -39,6 +39,7 @@ export class Markets {
         }catch(error){
             await this.genidex.revertError(error, 'getAllMarkets');
         }
+        return marketMap;
     }
 
     /**

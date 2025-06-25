@@ -56,6 +56,10 @@ export interface Market {
   isRewardable: boolean;
 }
 
+export interface MarketMap {
+  [marketId: string]: Market;
+};
+
 export interface TokenInfo {
   tokenAddress: string;
   symbol: string;
@@ -69,7 +73,12 @@ export interface OutputOrder {
   trader: string;
   price: bigint;
   quantity: bigint;
+  blockNumber: bigint;
 }
+
+export interface Orders {
+  [marketId: string]: OutputOrder[];
+};
 
 export interface orderParams{
     signer: Signer;
