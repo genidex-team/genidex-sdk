@@ -2,7 +2,7 @@
   "localhost": {
     "chainId": 31337,
     "contracts": {
-      "GeniDex": "0x671E6708FBE36A1995765a78Eb8246481f4B78bE",
+      "GeniDex": "0x73cEBa391506eb7eEf64A71A905Dca7405266512",
       "GeniToken": "0x999bCDA71acd8feAE9C42edd18a9B960D3EC3999",
       "GeniRewarder": "0x4826533B4897376654Bb4d4AD88B7faFD0C98528"
     }
@@ -10,7 +10,7 @@
   "geni": {
     "chainId": 31339,
     "contracts": {
-      "GeniDex": "0x671E6708FBE36A1995765a78Eb8246481f4B78bE",
+      "GeniDex": "0xe77d152176B38993D230bc0f74223229f2480Ed0",
       "GeniToken": "0x999bCDA71acd8feAE9C42edd18a9B960D3EC3999",
       "GeniRewarder": "0x4826533B4897376654Bb4d4AD88B7faFD0C98528"
     }

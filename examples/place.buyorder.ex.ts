@@ -1,6 +1,6 @@
 
-import { GeniDex, NetworkName, utils } from "../src/index";
-import { formatEther, parseEther, Signature, Signer } from "ethers";
+import { ERC20, GeniDex, NetworkName, utils } from "../src/index";
+import { formatEther, parseEther, parseUnits, Signature, Signer } from "ethers";
 import { config } from "../test/config";
 import { error } from "console";
 
@@ -19,15 +19,19 @@ async function main(){
     // console.log(market);
     const {quoteAddress} = market;
 
-    /*await genidex.balances.depositToken({
+    const {decimals} = await genidex.tokens.getTokenInfo(quoteAddress);
+    const erc20 = new ERC20(quoteAddress, provider);
+    await erc20.mint(signer, signerAddress, parseUnits("1000000", decimals) );
+
+    await genidex.balances.depositToken({
         signer,
         tokenAddress: quoteAddress,
         normAmount: parseEther("10000"),
         normApproveAmount: parseEther("10000")
-    });*/
+    });
 
-    const normPrice = parseEther("0.099");
-    const normQuantity = parseEther("199231.9")
+    const normPrice = parseEther("1");
+    const normQuantity = parseEther("100")
     const tx = await genidex.buyOrders.placeBuyOrder({
         signer,
         marketId,
