@@ -33,7 +33,7 @@ export class Tx {
         // log(decode)
         while (true) {
             const receipt = await provider.getTransactionReceipt(tx.hash);
-            // log(receipt);
+            // console.log('receipt', receipt)
             if(receipt){
                 if (receipt.status === 0) {
                     await this.handleFailedTx(tx, receipt);
@@ -60,12 +60,6 @@ export class Tx {
                     }
                 }
                 throw error;
-                // const newTx = await this.findTxByNonce(tx.from, tx.nonce);
-                // if(newTx){
-                //     let newReceipt = await this.wait(newTx.hash);
-                //     (newReceipt as any).firstHash = tx.hash;
-                //     return newReceipt;
-                // }
             }
             await new Promise((r) => setTimeout(r, pollMs));
             if(pollMs < 60_000){

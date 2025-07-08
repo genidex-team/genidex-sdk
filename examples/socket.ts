@@ -40,8 +40,8 @@ async function main(){
         network: 'geni',
         type: 'sell',
         marketId: marketId,
-        price: parseEther(price).toString(),
-        quantity: parseEther(quantity).toString()
+        price: utils.parseBaseUnit(price).toString(),
+        quantity: utils.parseBaseUnit(quantity).toString()
     });
     console.timeEnd();
     console.log(args);*/
@@ -50,8 +50,8 @@ async function main(){
     // let tx = await genidex.buyOrders.placeBuyOrder({
         signer,
         marketId,
-        normPrice: parseEther(price),
-        normQuantity: parseEther(quantity)
+        normPrice: utils.parseBaseUnit(price),
+        normQuantity: utils.parseBaseUnit(quantity)
     })
     const receipt = await genidex.tx.wait(tx?.hash);
     console.log(receipt?.hash)

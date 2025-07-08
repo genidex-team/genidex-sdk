@@ -1,5 +1,5 @@
 
-import { GeniDex, NetworkName, constants } from "../src/index";
+import { GeniDex, NetworkName, constants, utils } from "../src/index";
 import { ethers, formatEther, parseEther, Signature, Signer } from "ethers";
 import { config } from "../test/config";
 
@@ -16,7 +16,7 @@ async function main(){
 
     // Check balance
     const balance1 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)
-    console.log('Balance1', formatEther(balance1));
+    console.log('Balance1', utils.formatBaseUnit(balance1));
 
     // stop mine
     await provider.send("evm_setAutomine", [false]);
@@ -38,7 +38,7 @@ async function sendTx1(nonce: any){
     try{
         tx = await genidex.balances.depositEth({
             signer,
-            normAmount: parseEther("1"),
+            normAmount: utils.parseBaseUnit("1"),
             overrides: {
                 gasPrice: ethers.parseUnits("20", "gwei"),
                 nonce
@@ -81,7 +81,7 @@ async function sendTx2(nonce: any){
     try{
         tx = await genidex.balances.depositEth({
             signer,
-            normAmount: parseEther("1"),
+            normAmount: utils.parseBaseUnit("1"),
             overrides: {
                 gasPrice: ethers.parseUnits("30", "gwei"),
                 nonce

@@ -1,29 +1,32 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import { terser } from 'rollup-plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 
+const inputs = {
+  index: 'src/index.ts',
+  events: 'src/events/index.ts',
+  admin: 'src/admin/index.ts'
+};
+
 export default {
-  input: 'src/index.ts',
+  input: inputs,
   output: [
     {
-      file: 'dist/index.cjs.js',
+      dir: 'dist',
+      entryFileNames: 'cjs/[name].cjs',
+      chunkFileNames: 'cjs/[name].cjs',
       format: 'cjs',
       exports: 'auto',
       sourcemap: true,
       exports: 'named'
     },
     {
-      file: 'dist/index.esm.js',
+      dir: 'dist',
+      entryFileNames: 'esm/[name].mjs',
+      chunkFileNames: 'esm/[name].mjs',
       format: 'esm',
       sourcemap: true
-    },
-    {
-      file: 'dist/index.umd.js',
-      format: 'umd',
-      name: 'GeniDexSDK',
-      sourcemap: true,
     }
   ],
   context: 'window',

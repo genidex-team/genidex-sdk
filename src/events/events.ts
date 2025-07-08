@@ -1,12 +1,27 @@
 
 import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse, ZeroAddress } from 'ethers';
-import { GeniDex } from './genidex';
-import { MarketMap, Orders, OutputOrder, cancelOrderParams, orderParams } from '../types';
+import { GeniDex } from '../contracts/genidex';
+import { MarketMap, Orders, OutputOrder, CancelOrderParams, OrderParams } from '../types';
+import { utils } from '../utils';
 import EventEmitter from 'events';
+
+export interface OrderLog {
+    marketId: bigint,
+    trader: string;
+    orderIndex: bigint;
+    price: bigint;
+    quantity: bigint;
+    remainingQuantity: bigint,
+    lastPrice: bigint,
+    referrer: string,
+    userID: bigint;
+    blockNumber: bigint;
+}
 
 export type SDKEvents = {
   buyOrderPlaced: (data: OutputOrder) => void;
 };
+
 
 /**
  * @group Contracts
@@ -20,6 +35,7 @@ export class Events extends EventEmitter {
 
     constructor(_genidex: GeniDex) {
         super();
+        console.log('events')
         this.genidex = _genidex;
         this.contract = this.genidex.contract;
     }
@@ -28,7 +44,7 @@ export class Events extends EventEmitter {
         await this.loadMarkets();
         await this.loadBuyOrders();
         await this.loadSellOrders();
-        console.log(this.sellOrders[1][0])
+        if(this.sellOrders[1] && this.sellOrders[1][0]) console.log(this.sellOrders[1][0])
         this.onPlaceBuyOrder();
     }
 
@@ -58,20 +74,33 @@ export class Events extends EventEmitter {
         }
     }
 
+    parseEventOrder(...args: Array<any>): OrderLog{
+        const eventLog = args[args.length - 1];
+        const log: OrderLog = utils.parseLog(eventLog) as OrderLog;
+        console.log(log);
+        // log.blockNumber = eventLog.log.blockNumber;
+        return {...log, blockNumber: eventLog.log.blockNumber};
+    }
+
     onPlaceBuyOrder() {
-        this.contract.on("OnPlaceBuyOrder", (
-            marketId, trader, orderIndex,
+        this.contract.on("OnPlaceBuyOrder", (...args
+            /*marketId, trader, orderIndex,
             price, quantity, remainingQuantity,
-            lastPrice, referrer, eventLog
+            lastPrice, referrer, userID, eventLog*/
         ) => {
+            // utils.parseLog()
+            // console.log(args)
+            const log = this.parseEventOrder(...args);
             const order: OutputOrder = {
-                id: BigInt(orderIndex.toString()),
-                trader: trader,
-                price: BigInt(price.toString()),
-                quantity: BigInt(quantity.toString()),
-                blockNumber: eventLog.log.blockNumber
+                id:         log.orderIndex,
+                trader:     log.trader,
+                price:      log.price,
+                quantity:   log.quantity,
+                userID:     log.userID,
+                blockNumber: log.blockNumber
             }
-            const strMarketId = marketId.toString();
+            const strMarketId = log.marketId.toString();
+            const orderIndex = Number(log.orderIndex);
             this.buyOrders[strMarketId][orderIndex] = order;
             // console.log(order);
             this.emit("buyOrderPlaced", order);

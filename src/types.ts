@@ -71,16 +71,24 @@ export interface TokenInfo {
 export interface OutputOrder {
   id: bigint;
   trader: string;
+  userID: bigint;
   price: bigint;
   quantity: bigint;
-  blockNumber: bigint;
+  blockNumber: bigint | null;
 }
 
 export interface Orders {
   [marketId: string]: OutputOrder[];
 };
 
-export interface orderParams{
+export interface WriteContractParams{
+    signer: Signer;
+    method: string;
+    args?: any[];
+    overrides?: TransactionRequest
+}
+
+export interface OrderParams{
     signer: Signer;
     marketId: BigNumberish;
     normPrice: BigNumberish;
@@ -88,7 +96,7 @@ export interface orderParams{
     referrer?: AddressLike;
     overrides?: Overrides;
 }
-export interface  cancelOrderParams {
+export interface  CancelOrderParams {
   signer: Signer,
   marketId: BigNumberish,
   orderIndex: BigNumberish,

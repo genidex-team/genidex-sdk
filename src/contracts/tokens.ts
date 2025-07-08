@@ -42,9 +42,10 @@ export class Tokens {
         const rawResults = await this.genidex.readContract('getTokensInfo', [tokenAddresses]);
         return rawResults.map((item: any) => ({
             tokenAddress: item.tokenAddress,
+            minTransferAmount: item.minTransferAmount,
+            minOrderAmount: item.minOrderAmount,
             symbol: item.symbol,
-            usdMarketID: BigInt(item.usdMarketID.toString()),
-            minOrderAmount: BigInt(item.minOrderAmount.toString()),
+            usdMarketID: item.usdMarketID,
             decimals: Number(item.decimals),
             isUSD: item.isUSD,
         }));
@@ -87,9 +88,11 @@ export class Tokens {
      * @returns A Promise resolving to an array of unique token addresses.
      */
     async getAllTokens(): Promise<string[]> {
-        const rawMarkets = await this.contract.getAllMarkets();
+        // const rawMarkets = await this.contract.getAllMarkets();
+        const markets = await this.genidex.markets.getAllMarkets();
         const tokenSet = new Set<string>();
-        for (const m of rawMarkets) {
+        for (let i in markets) {
+            const m = markets[i];
             tokenSet.add(m.baseAddress.toLowerCase());
             tokenSet.add(m.quoteAddress.toLowerCase());
         }

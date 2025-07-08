@@ -1,8 +1,7 @@
 
-import { ERC20, GeniDex, NetworkName, utils } from "../src/index";
-import { formatEther, parseEther, parseUnits, Signature, Signer } from "ethers";
+import { constants, ERC20, GeniDex, utils } from "../src/index";
+import { parseUnits, Signer } from "ethers";
 import { config } from "../test/config";
-import { error } from "console";
 
 let genidex  = new GeniDex();
 let signer: Signer;
@@ -16,22 +15,40 @@ async function main(){
     const marketId = 1;
 
     const market = await genidex.markets.getMarket(marketId);
-    // console.log(market);
+    console.log(market);
     const {quoteAddress} = market;
+    // return;
+
+    // maxUint80 = 1,208,925,819,614,629,174,706,175;
+    // const strAmount = '12089258196146291.74706175';
+    // const strPrice = '12089258196146291.74706175';
+    const strAmount = '1000';
+    const strPrice = '1000';
+    const normPrice = utils.parseBaseUnit(strPrice);
+    const normQuantity = utils.parseBaseUnit(strAmount);
+    let total = normPrice * normQuantity / constants.BASE_UNIT;
+    let totalAndFee = total + total / 1000n;
 
     const {decimals} = await genidex.tokens.getTokenInfo(quoteAddress);
     const erc20 = new ERC20(quoteAddress, provider);
-    await erc20.mint(signer, signerAddress, parseUnits("1000000", decimals) );
+    const strMintAmount = '12089258196146291.747062';
+    // await erc20.mint(signer, signerAddress, parseUnits(strMintAmount, decimals) );
+    // await erc20.mint(signer, signerAddress, utils.toRawAmount(totalAndFee, decimals) );
 
-    await genidex.balances.depositToken({
+    let dTx = await genidex.balances.depositToken({
         signer,
         tokenAddress: quoteAddress,
-        normAmount: parseEther("10000"),
-        normApproveAmount: parseEther("10000")
+        normAmount: totalAndFee,
+        normApproveAmount: totalAndFee
     });
+    await genidex.tx.wait(dTx?.hash);
 
-    const normPrice = parseEther("1");
-    const normQuantity = parseEther("100")
+    const balance = await genidex.balances.getBalance(signerAddress, quoteAddress);
+    console.log({
+        balance,
+        format: utils.formatBaseUnit(balance)
+    })
+    
     const tx = await genidex.buyOrders.placeBuyOrder({
         signer,
         marketId,

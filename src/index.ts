@@ -1,12 +1,10 @@
-export * from "./utils";
+export {utils} from "./utils";
 export * from './types';
-export * from './contracts/genidex';
-export * from './contracts/markets';
-export * from './contracts/balances';
-export * from './contracts/tokens';
-export * from './contracts/buy.orders';
-export * from './contracts/sell.orders';
-// export * from './contracts/events';
-export * from "./contracts/erc20";
-export * from "./constants";
-
+export {GeniDex} from './contracts/genidex';
+export {Markets} from './contracts/markets';
+export {Balances} from './contracts/balances';
+export {Tokens} from './contracts/tokens';
+export {BuyOrders} from './contracts/buy.orders';
+export {SellOrders} from './contracts/sell.orders';
+export {ERC20} from "./contracts/erc20";
+export {constants} from "./constants";

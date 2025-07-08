@@ -16,7 +16,7 @@ describe("getMarket()", () => {
         console.log(market)
         let {
             id, symbol, lastUpdatePrice, price,
-            baseAddress, quoteAddress, creator, isRewardable
+            baseAddress, baseAddress: quoteAddress, creator, isRewardable
         } = market;
 
         expect(typeof market).toBe("object");

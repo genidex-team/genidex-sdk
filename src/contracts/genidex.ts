@@ -1,17 +1,15 @@
 import { BigNumberish, Contract,
     ContractTransactionResponse,
-    ErrorDescription, getBigInt, Interface, JsonRpcProvider, Network,
-    Provider, Signer, TransactionReceipt, TransactionResponse, 
-    WebSocketProvider, parseUnits,
-    ContractTransactionReceipt, TransactionRequest,
-    Result,
-    BrowserProvider,
-    formatEther} from 'ethers';
+    ErrorDescription, getBigInt, Interface, JsonRpcProvider,
+    Signer, TransactionReceipt, TransactionResponse,
+    WebSocketProvider, TransactionRequest, Result,
+    BrowserProvider
+} from 'ethers';
 import { abi } from '../../../genidex_contract/artifacts/contracts/GeniDex.sol/GeniDex.json';
 import { Markets } from './markets';
 import { Balances } from './balances';
 import { BuyOrders } from './buy.orders';
-import { TokenInfo, Market, OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts } from "../types";
+import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types";
 import { SellOrders } from './sell.orders';
 import { Tokens } from './tokens';
 import { IERC20Errors } from './abis/ierc20.errors';
@@ -19,17 +17,13 @@ import {config} from '../config/config';
 import { Tx } from './tx';
 import { utils } from "../utils";
 
-type writeContractParams = {
-    signer: Signer;
-    method: string;
-    args?: any[];
-    overrides?: TransactionRequest
-}
+
 
 /**
  * @group GeniDex
  */
 export class GeniDex {
+    public decimals: number = 8;
     public abi: any;
     public iface!: Interface;
     public network!: NetworkConfig;
@@ -47,6 +41,7 @@ export class GeniDex {
     private verifiedContract = false;
 
     constructor() {
+        // console.log('genidex');
     }
 
     async connect(
@@ -172,7 +167,7 @@ export class GeniDex {
         method,
         args = [],
         overrides = {}
-    }: writeContractParams ): Promise<GeniDexTransactionResponse | undefined> {
+    }: WriteContractParams ): Promise<GeniDexTransactionResponse | undefined> {
         const contract = new Contract(this.address, this.abi, signer);
         this.verifyMethodExists(contract, method);
         await Promise.all([
@@ -473,7 +468,5 @@ export class GeniDex {
         }
         return await this.writeContract({signer, method: 'unpause', args:[], overrides});
     }
-
-    
 
 }

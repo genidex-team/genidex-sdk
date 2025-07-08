@@ -8,6 +8,7 @@ import {
 import { GeniDex } from './genidex';
 import { ERC20 } from './erc20';
 import { utils } from '../utils';
+import {constants} from '../constants';
 import { GeniDexTransactionResponse } from '../types';
 
 type depositEthParams = {
@@ -26,7 +27,7 @@ type depositTokenParams = {
     signer: Signer;
     tokenAddress: string;
     normAmount: BigNumberish;
-    normApproveAmount: BigNumberish;
+    normApproveAmount?: BigNumberish;
     overrides?: TransactionRequest;
 }
 
@@ -63,20 +64,33 @@ export class Balances {
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normAmount must be > 0");
         }
-        const value = BigInt(normAmount);
+        // const value = BigInt(normAmount);
+        const value = utils.toRawAmount(normAmount, 18);
         if (value <= 0n) {
             throw new Error("ETH amount must be greater than zero");
         }
 
-        const tx = await this.genidex.writeContract({
-            signer,
-            method: "depositEth",
-            overrides: {
-                ...overrides,
-                value,
+        try{
+            const tx = await this.genidex.writeContract({
+                signer,
+                method: "depositEth",
+                overrides: {
+                    ...overrides,
+                    value,
+                }
+            });
+            return tx;
+        }catch(error: any){
+            if(error.revert==null){
+                const signerAddress = await signer.getAddress();
+                const normBalance = await utils.getETHBalanceInBaseUnit(this.genidex.provider, signerAddress);
+                if(normBalance < BigInt(normAmount) ){
+                    error.revert = 'InsufficientBalance(available: '+ utils.formatBaseUnit(normBalance) +
+                    ', required: ' + utils.formatBaseUnit(normAmount) + ')';
+                }
             }
-        });
-        return tx;
+            throw error;
+        }
     }
 
     /**
@@ -122,6 +136,7 @@ export class Balances {
         overrides = {}
     }: depositTokenParams
     ): Promise<TransactionResponse | TransactionReceipt | undefined | null>{
+        if(!normApproveAmount) normApproveAmount = normAmount;
         if (!normAmount || BigInt(normAmount) <= 0n) {
             throw new Error("normAmount must be > 0");
         }
@@ -131,7 +146,6 @@ export class Balances {
         const rawAmount = utils.toRawAmount(normAmount, decimals);
         // Approve if needed
         const rawAllowance = await erc20.allowance(signer.getAddress(), this.genidex.address);
-
         if (rawAllowance < rawAmount) {
             const rawApproveAmount = utils.toRawAmount(normApproveAmount, decimals);
             await erc20.approve(signer, this.genidex.address, rawApproveAmount);
@@ -141,12 +155,31 @@ export class Balances {
             tokenAddress,
             normAmount
         ];
-        return await this.genidex.writeContract({
-            signer,
-            method: "depositToken",
-            args,
-            overrides
-        });
+        try{
+            return await this.genidex.writeContract({
+                signer,
+                method: "depositToken",
+                args,
+                overrides
+            });
+        }catch(error: any){
+            if(error.revert==null){
+                const signerAddress = await signer.getAddress();
+                const erc20Token = new ERC20(tokenAddress, this.genidex.provider);
+                const normBalance = await erc20Token.normBalanceOf(signerAddress);
+                if(normBalance < BigInt(normAmount) ){
+                    const message = 'InsufficientBalance(available: '+ utils.formatBaseUnit(normBalance) +
+                    ', required: ' + utils.formatBaseUnit(normAmount) + ')';
+                    error.revert =  {
+                        name: 'InsufficientBalance',
+                        args: [normBalance, normAmount],
+                        message: message
+                    }
+                }
+            }
+            utils.logError(error);
+            throw error;
+        }
     }
 
     /**
@@ -179,9 +212,15 @@ export class Balances {
      * @param tokenOrEtherAddress - Token address or ETH_ADDRESS (0x0).
      * @returns Promise resolving to the deposited balance (as bigint), normalized to 18 decimals.
      */
-    async getBalance(accountAddress: string, tokenOrEtherAddress: string): Promise<bigint> {
-        const args = [accountAddress, tokenOrEtherAddress];
-        const normAmount = await this.genidex.readContract('balances', args);
+    async getBalance(accountAddress: string, tokenAddress: string): Promise<bigint> {
+        const args = [accountAddress, tokenAddress];
+        const normAmount = await this.genidex.readContract('getBalance', args);
+        return normAmount;
+    }
+
+    async getETHBalance(accountAddress: string): Promise<bigint> {
+        const args = [accountAddress, constants.ETH_ADDRESS];
+        const normAmount = await this.genidex.readContract('getBalance', args);
         return normAmount;
     }
 }

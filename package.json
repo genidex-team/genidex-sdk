@@ -2,17 +2,37 @@
   "name": "genidex-sdk",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.mjs",
   "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./events": {
+      "import": "./dist/esm/events.mjs",
+      "require": "./dist/cjs/events.cjs",
+      "types": "./dist/events.d.ts"
+    },
+    "./admin": {
+      "import": "./dist/esm/admin.mjs",
+      "require": "./dist/cjs/admin.cjs",
+      "types": "./dist/admin.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "scripts": {
     "build": "tsc && rollup -c",
     "dev": "tsc --watch & rollup -c -w",
-    "examples": "nodemon --watch ./src --watch ./examples --ext ts,json,mjs,js --exec 'clear && ts-node' --project tsconfig.dev.json",
+    "examples": "nodemon --watch ./src --watch ./examples --watch ./test --ext ts,json,mjs,js --exec 'clear && clear && tsx'",
     "docs": "typedoc",
     "dev_docs": "nodemon --watch ./src --watch typedoc.json --ext .ts,.json --exec typedoc",
     "docs_server": "live-server ./docs/out --open=/ --watch=./docs/out",
-    "test": "nodemon --exec npx jest --watch ./test --watch ./src"
+    "test": "nodemon --exec 'clear && clear && npx' jest --watch ./test --watch ./src"
   },
   "keywords": [],
   "author": "",
@@ -28,19 +48,23 @@
     "geni_data": "file:../geni_data",
     "jest": "^29.7.0",
     "live-server": "^1.2.0",
-    "rollup": "^2.79.2",
-    "rollup-plugin-terser": "^7.0.2",
+    "rollup": "^4.44.1",
+    "rollup-plugin-dts": "^6.2.1",
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tslib": "^2.8.1",
+    "tsx": "^4.20.3",
     "typedoc": "^0.28.5",
     "typedoc-plugin-markdown": "^4.6.4",
     "typescript": "^5.8.3"
   },
+  "peerDependencies": {
+    "ethers": "^6.14.4"
+  },
   "dependencies": {
     "@genidex/logger": "file:../logger",
-    "ethers": "^6.14.3",
+    "ethers": "^6.14.4",
     "socket.io-client": "^4.8.1",
     "source-map-support": "^0.5.21"
   }

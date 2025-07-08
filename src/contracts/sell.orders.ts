@@ -1,7 +1,7 @@
 
 import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
-import { OutputOrder, cancelOrderParams, orderParams } from '../types';
+import { OutputOrder, CancelOrderParams, OrderParams } from '../types';
 import { utils } from '../utils';
 
 export class SellOrders {
@@ -63,7 +63,7 @@ export class SellOrders {
         normQuantity,
         referrer = ZeroAddress,
         overrides = {}
-    }: orderParams): Promise<TransactionResponse|undefined> {
+    }: OrderParams): Promise<TransactionResponse|undefined> {
         // const buyOrders = this.genidex.buyOrders;
         // const buyOrderIds = await buyOrders.getMatchingBuyOrderIds(marketId, normPrice, normQuantity);
         // const filledSellOrderId = await this.randomFilledSellOrderID(marketId);
@@ -96,7 +96,7 @@ export class SellOrders {
         marketId,
         orderIndex,
         overrides = {}
-    }: cancelOrderParams): Promise<TransactionResponse | undefined> {
+    }: CancelOrderParams): Promise<TransactionResponse | undefined> {
         const args = [marketId, orderIndex];
         const method = 'cancelSellOrder';
         return await this.genidex.writeContract({signer, method, args, overrides});
@@ -138,11 +138,12 @@ export class SellOrders {
         // console.log(rawOrders);
         // return allOrders;
         return rawOrders.map((o: any, index: number) => ({
-            id: BigInt(index.toString()),
+            id: BigInt(o.id.toString()),
             trader: o.trader,
+            userID: BigInt(o.userID.toString()),
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
-            blockNumber: 0n
+            blockNumber: null
         }));
     }
 
@@ -164,7 +165,7 @@ export class SellOrders {
      * @param maxPrice - Max acceptable price (normalized to 18 decimals)
      * @returns Array of matching OutputOrder objects
      */
-    async getSellOrders(marketId: BigNumberish, maxPrice: BigNumberish, limit: BigNumberish=100): Promise<OutputOrder[]> {
+    /*async getSellOrders(marketId: BigNumberish, maxPrice: BigNumberish, limit: BigNumberish=100): Promise<OutputOrder[]> {
         const rawOrders = await this.contract["getSellOrders"](marketId, maxPrice, limit);
         return rawOrders.map((o: any) => ({
             id: BigInt(o.id.toString()),
@@ -172,7 +173,7 @@ export class SellOrders {
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
         }));
-    }
+    }*/
 
     /**
      * Sorts an array of sell orders by price ascending (low to high).

@@ -17,16 +17,16 @@ async function main(){
 
     await provider.send("evm_setAutomine", [true]);
     // deposit
-    await genidex.balances.depositEth({signer, normAmount: parseEther("1") });
+    await genidex.balances.depositEth({signer, normAmount: utils.parseBaseUnit("1") });
     // Check balance
     const balance1 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)
-    console.log('Balance1', formatEther(balance1));
+    console.log('Balance1', utils.formatBaseUnit(balance1));
 
     // withdraw
     // await provider.send("evm_setAutomine", [false]);
 
     try{
-        // const normAmount = parseEther("1");
+        // const normAmount = utils.parseBaseUnit("1");
         const tx1 = await genidex.balances.withdrawEth({signer, normAmount: balance1});
         const tx2 = await genidex.balances.withdrawEth({signer, normAmount: balance1});
 
@@ -51,7 +51,7 @@ async function main(){
 
     // Check balance
     const balance2 = await genidex.balances.getBalance(signerAddress, ETH_ADDRESS)
-    console.log('Balance2', formatEther(balance2));
+    console.log('Balance2', utils.formatBaseUnit(balance2));
 
 
 }

@@ -1,4 +1,4 @@
-import { ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther, parseUnits } from "ethers";
+import {LogDescription, EventLog, ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther, parseUnits } from "ethers";
 import { constants } from "./constants";
 import { OutputOrder } from "./types";
 
@@ -11,7 +11,7 @@ export class Utils{
    * @param tokenAddress - ETH_ADDRESS or ERC20 token address
    * @returns Balance as bigint
    */
-  async getNormBalance(
+  async getBalanceInBaseUnit(
     provider: Provider,
     userAddress: string,
     tokenAddress: string,
@@ -19,7 +19,9 @@ export class Utils{
   ): Promise<bigint> {
     if (tokenAddress === constants.ETH_ADDRESS) {
       // Native ETH balance
-      return await provider.getBalance(userAddress);
+      const rawBalance: bigint = await provider.getBalance(userAddress);
+      const normBalance: bigint = this.toNormAmount(rawBalance, 18);
+      return normBalance;
     } else {
       // ERC20 balance
       const abi = ["function balanceOf(address) view returns (uint256)"];
@@ -28,6 +30,21 @@ export class Utils{
       const normBalance: bigint = this.toNormAmount(rawBalance, decimals);
       return normBalance;
     }
+  }
+
+  /**
+   * Get on-chain balance of a user's ETH.
+   * @param provider - Ethers provider instance
+   * @param userAddress - Address of the user
+   * @returns Balance as bigint
+   */
+  async getETHBalanceInBaseUnit(
+    provider: Provider,
+    userAddress: string
+  ): Promise<bigint> {
+      const rawBalance: bigint = await provider.getBalance(userAddress);
+      const normBalance: bigint = this.toNormAmount(rawBalance, 18);
+      return normBalance;
   }
 
   /**
@@ -45,7 +62,7 @@ export class Utils{
   ): bigint {
     const value = typeof amount === "bigint" ? amount : BigInt(amount);
     if (fromDecimals === toDecimals) return value;
-    const diff = toDecimals - fromDecimals;
+      const diff = BigInt(toDecimals) - BigInt(fromDecimals);
     if (diff > 0) {
       return value * 10n ** BigInt(diff); // scale up
     } else {
@@ -64,7 +81,7 @@ export class Utils{
     rawAmount: bigint | string | BigNumberish,
     tokenDecimals: number
   ): bigint {
-    return this.convertDecimals(rawAmount, tokenDecimals, 18);
+    return this.convertDecimals(rawAmount, tokenDecimals, constants.GENIDEX_DECIMALS);
   }
 
   /**
@@ -78,7 +95,7 @@ export class Utils{
     normAmount: bigint | string | BigNumberish,
     tokenDecimals: number
   ): bigint {
-    return this.convertDecimals(normAmount, 18, tokenDecimals);
+    return this.convertDecimals(normAmount, constants.GENIDEX_DECIMALS, tokenDecimals);
   }
 
   /**
@@ -93,9 +110,9 @@ export class Utils{
    */
   formatNormAmount(normAmount: string | number | bigint): string {
     const amount = typeof normAmount === 'bigint' ? normAmount : toBigInt(normAmount);
-    const formatted = formatUnits(amount, 18); // returns a string
+    const formatted = formatUnits(amount, constants.GENIDEX_DECIMALS); // returns a string
     let [intPart, decPart = ''] = formatted.split('.');
-    decPart = decPart.padEnd(18, '0').slice(0, 18);
+    decPart = decPart.padEnd(constants.GENIDEX_DECIMALS, '0').slice(0, constants.GENIDEX_DECIMALS);
     intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return `${intPart}.${decPart}`;
   }
@@ -119,7 +136,7 @@ export class Utils{
       const value = paramValues[index];
       let displayValue;
       if (typeof value === 'bigint') {
-        displayValue = formatEther(value);
+        displayValue = value;
       } else if (typeof value === 'object') {
         displayValue = JSON.stringify(value, this.bigintReplacer);
       } else {
@@ -142,33 +159,42 @@ export class Utils{
     if(error.reason) console.error('revert:', error.reason);
   }
 
-  formatBigIntsToEther(obj: Record<string, any>): Record<string, any> {
-    const result: Record<string, any> = {};
-    for (const key in obj) {
-        const value = obj[key];
-
-        if (typeof value === 'bigint') {
-            result[key] = formatEther(value);
-        } else {
-            result[key] = value;
-        }
-    }
-    return result;
-  }
-
   formatOrders(orders: OutputOrder[]) {
       return orders.map(order => ({
         id: order.id,
         trader: order.trader,
-        price: formatEther(order.price),
-        quantity: formatEther(order.quantity),
+        price: utils.formatBaseUnit(order.price),
+        quantity: utils.formatBaseUnit(order.quantity),
       })
     );
   }
 
-  parseUnits(amount: number | string){
-    const strAmount = amount.toString();
-    return parseUnits(strAmount, 8);
+  parseLog(log: EventLog | LogDescription): Record<string, any> {
+    const result: Record<string, any> = {};
+
+    if (!log.args || !log.fragment || !Array.isArray(log.args)) {
+      return result;
+    }
+
+    const inputs = log.fragment.inputs;
+
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      const value = log.args[i];
+      result[input.name] = value;
+    }
+
+    return result;
+  }
+
+  parseBaseUnit(value: number | string){
+      const strValue = value.toString();
+      return parseUnits(strValue, constants.GENIDEX_DECIMALS);
+  }
+
+  formatBaseUnit(normValue: BigNumberish){
+      const strValue = normValue.toString();
+      return formatUnits(strValue, constants.GENIDEX_DECIMALS);
   }
 
 }

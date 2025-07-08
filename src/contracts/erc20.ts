@@ -90,8 +90,9 @@ export class ERC20 {
     return await this.contract.balanceOf(account);
   }
 
-  async normBalanceOf(account: AddressLike, decimals: number): Promise<bigint> {
-    const rawBalance = await this.contract.balanceOf(account);
+  async normBalanceOf(account: AddressLike): Promise<bigint> {
+    const rawBalance = await this.balanceOf(account);
+    const decimals = await this.decimals();
     const normBalance = utils.toNormAmount(rawBalance, decimals);
     return normBalance;
   }

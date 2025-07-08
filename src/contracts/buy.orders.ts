@@ -1,7 +1,7 @@
 
 import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse, ZeroAddress } from 'ethers';
 import { GeniDex } from './genidex';
-import { OutputOrder, cancelOrderParams, orderParams } from '../types';
+import { OutputOrder, CancelOrderParams, OrderParams } from '../types';
 
 
 
@@ -65,7 +65,7 @@ export class BuyOrders {
         normPrice, normQuantity,
         referrer = ZeroAddress,
         overrides = {}
-    }: orderParams ): Promise<ContractTransactionResponse | undefined> {
+    }: OrderParams ): Promise<ContractTransactionResponse | undefined> {
         const {filledBuyOrderID, matchingSellOrderIds} = await this.getBuyOrderArgs(
                 marketId, normPrice, normQuantity
         )
@@ -97,7 +97,7 @@ export class BuyOrders {
         marketId,
         orderIndex,
         overrides = {}
-    }: cancelOrderParams): Promise<TransactionResponse | undefined> {
+    }: CancelOrderParams): Promise<TransactionResponse | undefined> {
         const args = [marketId, orderIndex];
         const method = 'cancelBuyOrder';
         return await this.genidex.writeContract({signer, method, args, overrides});
@@ -110,7 +110,7 @@ export class BuyOrders {
      * @param maxPrice - Max acceptable price (normalized to 18 decimals)
      * @returns Array of matching OutputOrder objects
      */
-    async getBuyOrders(marketId: BigNumberish, maxPrice: BigNumberish, limit: BigNumberish=100): Promise<OutputOrder[]> {
+    /*async getBuyOrders(marketId: BigNumberish, maxPrice: BigNumberish, limit: BigNumberish=100): Promise<OutputOrder[]> {
         const rawOrders = await this.contract["getBuyOrders"](marketId, maxPrice, limit);
         return rawOrders.map((o: any) => ({
             id: BigInt(o.id.toString()),
@@ -118,7 +118,7 @@ export class BuyOrders {
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
         }));
-    }
+    }*/
 
     async getAllBuyOrders(marketId: BigNumberish): Promise<OutputOrder[]>{
         const rawOrders = [];
@@ -134,13 +134,23 @@ export class BuyOrders {
         }
         // return allOrders;
         return rawOrders.map((o: any, index: number) => ({
-            id: BigInt(index.toString()),
+            id: BigInt(o.id.toString()),
             trader: o.trader,
+            userID: BigInt(o.userID.toString()),
             price: BigInt(o.price.toString()),
             quantity: BigInt(o.quantity.toString()),
-            blockNumber: 0n
+            blockNumber: null
         }));
     }
+
+    /*getBuyOrderID(rawOrder: any, marketId: BigNumberish){
+        const id = this.genidex.network.chainId.toString()
+        + '_' + marketId.toString()
+        + '_' + rawOrder.index.toString()
+        + '_' + rawOrder.userID.toString()
+
+        return id;
+    }*/
 
     async getOpenOrders(marketId: BigNumberish): Promise<OutputOrder[]>{
         const allOrders = await this.getAllBuyOrders(marketId);
@@ -174,7 +184,7 @@ export class BuyOrders {
      * @param normQuantity - Maximum total quantity needed
      * @returns Array of order IDs
      */
-    getBuyOrderIds(sortedBuyOrders: OutputOrder[], normQuantity: BigNumberish): BigNumberish[] {
+    /*getBuyOrderIds(sortedBuyOrders: OutputOrder[], normQuantity: BigNumberish): BigNumberish[] {
         const selectedIds: BigNumberish[] = [];
         let total = 0n;
         const target = getBigInt(normQuantity);
@@ -184,7 +194,7 @@ export class BuyOrders {
             total += order.quantity;
         }
         return selectedIds;
-    }
+    }*/
 
     async getFilledBuyOrderIds(marketId: BigNumberish, limit: BigNumberish=1000) {
         const typeOrder = 0;// buy: 0, sell: 1
