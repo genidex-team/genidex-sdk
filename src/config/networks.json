@@ -2,17 +2,17 @@
   "localhost": {
     "chainId": 1,
     "contracts": {
-      "GeniDex": "0xFEF3D1A4b0D806Cd9c41B56B0c9566cF435a6fae",
-      "GeniToken": "0x682D5fC7f2F78eA435b24A0c027D85AaDd773C62",
-      "GeniRewarder": "0xB03767bE6D452ECc8D4747Ec0929Ba682E3BD3b4"
+      "GeniDex": "0xF354cace41709415ce2a24E5FefBC469D51d4FF8",
+      "GeniToken": "0x9F0bccbFF68824f94cDa62c7bc4e05b98b026e34",
+      "GeniRewarder": "0x3A5fBC501c5D515383fADFf5ebD92C393f5eFee9"
     }
   },
   "geni": {
-    "chainId": 31339,
+    "chainId": 1,
     "contracts": {
-      "GeniDex": "0xe77d152176B38993D230bc0f74223229f2480Ed0",
-      "GeniToken": "0x999bCDA71acd8feAE9C42edd18a9B960D3EC3999",
-      "GeniRewarder": "0x4826533B4897376654Bb4d4AD88B7faFD0C98528"
+      "GeniDex": "0xF354cace41709415ce2a24E5FefBC469D51d4FF8",
+      "GeniToken": "0x9F0bccbFF68824f94cDa62c7bc4e05b98b026e34",
+      "GeniRewarder": "0x3A5fBC501c5D515383fADFf5ebD92C393f5eFee9"
     }
   },
   "sepolia": {

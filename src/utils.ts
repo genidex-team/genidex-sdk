@@ -197,6 +197,25 @@ export class Utils{
       return formatUnits(strValue, constants.GENIDEX_DECIMALS);
   }
 
+  unixTime(): number {
+    return Math.floor(Date.now() / 1000);
+  }
+
+  formatTimeDiff(startTime: bigint | number): { days: number, minutes: number, seconds: number } {
+    const start = typeof startTime === 'bigint' ? Number(startTime) : startTime;
+    const startDate = new Date(start * 1000);
+    const now = new Date();
+
+    const diffMs = now.getTime() - startDate.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+
+    const days = Math.floor(diffSec / (60 * 60 * 24));
+    const minutes = Math.floor((diffSec % (60 * 60 * 24)) / 60);
+    const seconds = diffSec % 60;
+
+    return { days, minutes, seconds };
+  }
+
 }
 
 export const utils = new Utils;

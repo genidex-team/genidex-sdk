@@ -44,7 +44,7 @@ async function main(){
     })
 
     const receipt = await genidex.tx.wait(tx?.hash);
-    
+
     // console.log(receipt?.logs);
     if(receipt){
         console.log('\n\nreceipt', receipt.hash);

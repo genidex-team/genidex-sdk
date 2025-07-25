@@ -6,7 +6,8 @@ import typescript from '@rollup/plugin-typescript';
 const inputs = {
   index: 'src/index.ts',
   events: 'src/events/index.ts',
-  admin: 'src/admin/index.ts'
+  admin: 'src/admin/index.ts',
+  rewarder: 'src/rewarder/index.ts'
 };
 
 export default {
@@ -14,8 +15,8 @@ export default {
   output: [
     {
       dir: 'dist',
-      entryFileNames: 'cjs/[name].cjs',
-      chunkFileNames: 'cjs/[name].cjs',
+      entryFileNames: 'cjs/[name]/[name].cjs',
+      chunkFileNames: 'cjs/[name]/[name].cjs',
       format: 'cjs',
       exports: 'auto',
       sourcemap: true,
@@ -23,8 +24,8 @@ export default {
     },
     {
       dir: 'dist',
-      entryFileNames: 'esm/[name].mjs',
-      chunkFileNames: 'esm/[name].mjs',
+      entryFileNames: 'esm/[name]/[name].mjs',
+      chunkFileNames: 'esm/[name]/[name].mjs',
       format: 'esm',
       sourcemap: true
     }

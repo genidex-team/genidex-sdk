@@ -2,25 +2,30 @@
   "name": "genidex-sdk",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.mjs",
+  "main": "dist/cjs/index/index.cjs",
+  "module": "dist/esm/index/index.mjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.mjs",
-      "require": "./dist/cjs/index.cjs",
+      "import": "./dist/esm/index/index.mjs",
+      "require": "./dist/cjs/index/index.cjs",
       "types": "./dist/index.d.ts"
     },
     "./events": {
-      "import": "./dist/esm/events.mjs",
-      "require": "./dist/cjs/events.cjs",
+      "import": "./dist/esm/events/events.mjs",
+      "require": "./dist/cjs/events/events.cjs",
       "types": "./dist/events.d.ts"
     },
     "./admin": {
-      "import": "./dist/esm/admin.mjs",
-      "require": "./dist/cjs/admin.cjs",
-      "types": "./dist/admin.d.ts"
+      "import": "./dist/esm/admin/admin.mjs",
+      "require": "./dist/cjs/admin/admin.cjs",
+      "types": "./dist/admin/admin.d.ts"
+    },
+     "./rewarder": {
+      "import": "./dist/esm/rewarder/rewarder.mjs",
+      "require": "./dist/cjs/rewarder/rewarder.cjs",
+      "types": "./dist/rewarder/rewarder.d.ts"
     },
     "./package.json": "./package.json"
   },

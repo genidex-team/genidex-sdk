@@ -11,7 +11,6 @@ let provider = config.provider;
 let gEvents;
 
 async function main(){
-    console.log('get.orders')
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
     await genidex.connect(config.networkName, provider);

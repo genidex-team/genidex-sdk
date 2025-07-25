@@ -10,7 +10,7 @@ let signerAddress: string;
 let provider = config.provider;
 
 async function main(){
-    console.log('get.markets')
+    console.log('get.tokens')
     signer = await config.getSigner();
     signerAddress = await signer.getAddress();
     await genidex.connect(config.networkName, provider);

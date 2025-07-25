@@ -15,7 +15,7 @@ async function main(){
     const marketId = 1;
 
     const market = await genidex.markets.getMarket(marketId);
-    console.log(market);
+    // console.log(market);
     const {quoteAddress} = market;
     // return;
 
@@ -48,7 +48,7 @@ async function main(){
         balance,
         format: utils.formatBaseUnit(balance)
     })
-    
+
     const tx = await genidex.buyOrders.placeBuyOrder({
         signer,
         marketId,
@@ -57,7 +57,7 @@ async function main(){
     })
 
     const receipt = await genidex.tx.wait(tx?.hash);
-    
+
     // console.log(receipt?.logs);
     if(receipt){
         console.log('\n\nreceipt', receipt.hash);
