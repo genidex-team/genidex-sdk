@@ -15,20 +15,24 @@
     "./events": {
       "import": "./dist/esm/events/events.mjs",
       "require": "./dist/cjs/events/events.cjs",
-      "types": "./dist/events.d.ts"
+      "types": "./dist/events/events.d.ts"
     },
     "./admin": {
       "import": "./dist/esm/admin/admin.mjs",
       "require": "./dist/cjs/admin/admin.cjs",
       "types": "./dist/admin/admin.d.ts"
     },
-     "./rewarder": {
+    "./rewarder": {
       "import": "./dist/esm/rewarder/rewarder.mjs",
       "require": "./dist/cjs/rewarder/rewarder.cjs",
       "types": "./dist/rewarder/rewarder.d.ts"
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsc && rollup -c",
@@ -37,7 +41,10 @@
     "docs": "typedoc",
     "dev_docs": "nodemon --watch ./src --watch typedoc.json --ext .ts,.json --exec typedoc",
     "docs_server": "live-server ./docs/out --open=/ --watch=./docs/out",
-    "test": "nodemon --exec 'clear && clear && npx' jest --watch ./test --watch ./src"
+    "test": "nodemon --exec 'clear && clear && npx' jest --watch ./test --watch ./src",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build2": "tsc --version && npm run build:esm && npm run build:cjs"
   },
   "keywords": [],
   "author": "",

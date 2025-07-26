@@ -1,6 +1,6 @@
 import {LogDescription, EventLog, ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther, parseUnits } from "ethers";
-import { constants } from "./constants";
-import { OutputOrder } from "./types";
+import { constants } from "./constants.js";
+import { OutputOrder } from "./types.js";
 
 export class Utils{
 

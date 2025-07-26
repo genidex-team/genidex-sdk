@@ -23,6 +23,6 @@ export interface UserRewardInfo {
 
 export interface claimParams{
     signer: Signer;
-    pointsToClaim: BigNumberish;
+    points: BigNumberish;
     overrides?: Overrides;
 }

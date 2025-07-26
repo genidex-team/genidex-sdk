@@ -1,9 +1,9 @@
 
 import { BigNumberish, Contract, Signer, TransactionResponse } from 'ethers';
-import { GeniDex } from './genidex';
-import { ERC20 } from './erc20';
-import { utils } from '../utils';
-import { Market, MarketMap } from '../types';
+import { GeniDex } from './genidex.js';
+import { ERC20 } from './erc20.js';
+import { utils } from '../utils.js';
+import { Market, MarketMap } from '../types.js';
 
 export class Markets {
     genidex!: GeniDex;

@@ -1,4 +1,4 @@
 
 
-export * from './rewarder.types';
-export {Rewarder} from './rewarder';
+export * from './rewarder.types.js';
+export {Rewarder} from './rewarder.js';

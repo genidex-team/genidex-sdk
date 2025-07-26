@@ -1,8 +1,8 @@
 
 import { BigNumberish, Contract, getBigInt, Signer, TransactionResponse, ZeroAddress } from 'ethers';
-import { GeniDex } from './genidex';
-import { OutputOrder, CancelOrderParams, OrderParams } from '../types';
-import { utils } from '../utils';
+import { GeniDex } from './genidex.js';
+import { OutputOrder, CancelOrderParams, OrderParams } from '../types.js';
+import { utils } from '../utils.js';
 
 export class SellOrders {
     genidex!: GeniDex;

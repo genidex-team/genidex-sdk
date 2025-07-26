@@ -1,11 +1,11 @@
 
 import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse, ZeroAddress } from 'ethers';
-import { GeniDex } from '../contracts/genidex';
-import { MarketMap, Orders } from '../types';
-import { utils } from '../utils';
-import './admin.types';
-import { AddMarketParams, ListTokenParams, WriteContractParams } from './admin.types';
-import { constants } from '../constants';
+import { GeniDex } from '../genidex/genidex.js';
+import { MarketMap, Orders } from '../types.js';
+import { utils } from '../utils.js';
+import './admin.types.js';
+import { AddMarketParams, ListTokenParams, WriteContractParams } from './admin.types.js';
+import { constants } from '../constants.js';
 
 
 export class Admin {

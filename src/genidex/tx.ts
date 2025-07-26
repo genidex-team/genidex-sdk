@@ -1,7 +1,7 @@
 import { Contract, Overrides, ErrorDescription, Interface, JsonRpcProvider, TransactionDescription, TransactionReceipt, TransactionResponse, LogDescription, Log } from "ethers";
-import { GeniDex } from "./genidex";
-import { WaitOpts } from "../types";
-import { utils } from "../utils";
+import { GeniDex } from "./genidex.js";
+import { WaitOpts } from "../types.js";
+import { utils } from "../utils.js";
 
 export class Tx {
     genidex!: GeniDex;

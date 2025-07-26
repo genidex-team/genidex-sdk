@@ -5,18 +5,18 @@ import { BigNumberish, Contract,
     WebSocketProvider, TransactionRequest, Result,
     BrowserProvider
 } from 'ethers';
-import {BaseContract} from '../base/base.contract';
-import { abi } from '../../../genidex_contract/artifacts/contracts/GeniDex.sol/GeniDex.json';
-import { Markets } from './markets';
-import { Balances } from './balances';
-import { BuyOrders } from './buy.orders';
-import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types";
-import { SellOrders } from './sell.orders';
-import { Tokens } from './tokens';
-import { IERC20Errors } from '../abis/ierc20.errors';
-import {config} from '../config/config';
-import { Tx } from './tx';
-import { utils } from "../utils";
+import {BaseContract} from '../base/base.contract.js';
+import {geniDexABI} from "../abis/genidex.abi.js";
+import { Markets } from './markets.js';
+import { Balances } from './balances.js';
+import { BuyOrders } from './buy.orders.js';
+import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types.js";
+import { SellOrders } from './sell.orders.js';
+import { Tokens } from './tokens.js';
+import { IERC20Errors } from '../abis/ierc20.errors.js';
+import {config} from '../config/config.js';
+import { Tx } from './tx.js';
+import { utils } from "../utils.js";
 
 
 
@@ -43,7 +43,7 @@ export class GeniDex extends BaseContract {
     ){
         let network    = config.getNetwork(networkName);
         let address    = network.contracts.GeniDex;
-        await super.init(address, abi, networkName, providerOrRpc);
+        await super.init(address, geniDexABI, networkName, providerOrRpc);
 
         this.markets    = new Markets(this);
         this.tokens     = new Tokens(this);

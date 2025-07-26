@@ -1,8 +1,8 @@
 
 import { BigNumberish, Contract, getBigInt, isAddress, Signer, TransactionResponse } from 'ethers';
-import { GeniDex } from './genidex';
-import { ERC20 } from './erc20';
-import { OutputOrder, TokenInfo } from '../types';
+import { GeniDex } from './genidex.js';
+import { ERC20 } from './erc20.js';
+import { OutputOrder, TokenInfo } from '../types.js';
 
 export class Tokens {
     genidex!: GeniDex;

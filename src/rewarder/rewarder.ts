@@ -1,11 +1,11 @@
 
 import {JsonRpcProvider, WebSocketProvider, BrowserProvider, Result, ContractTransactionResponse} from 'ethers';
-import {BaseContract} from '../base/base.contract';
-import { abi } from '../../../geni_rewarder/artifacts/contracts/GeniRewarder.sol/GeniRewarder.json';
-import {  NetworkName } from "../types";
+import {BaseContract} from '../base/base.contract.js';
+import {rewarderABI} from "../abis/rewarder.abi.js";
+import {  NetworkName } from "../types.js";
 
-import {config} from '../config/config';
-import { claimParams, RewardSystemInfo, UserRewardInfo } from './rewarder.types';
+import {config} from '../config/config.js';
+import { claimParams, RewardSystemInfo, UserRewardInfo } from './rewarder.types.js';
 
 
 export class Rewarder extends BaseContract {
@@ -22,7 +22,7 @@ export class Rewarder extends BaseContract {
         let network    = config.getNetwork(networkName);
         let address    = network.contracts.GeniRewarder;
         if(!address) throw new Error('Invalid GeniRewarder contract address. Value: ' + address);
-        await super.init(address, abi, networkName, providerOrRpc);
+        await super.init(address, rewarderABI, networkName, providerOrRpc);
 
         this.apiSocket  = apiSocket;
     }
@@ -46,13 +46,22 @@ export class Rewarder extends BaseContract {
         return result.toObject();
     }
 
-    async claim({
+    async claimTradingReward({
         signer,
-        pointsToClaim,
+        points,
         overrides = {}
     }: claimParams): Promise<ContractTransactionResponse | undefined>{
-        let args = [pointsToClaim];
-        return await this.writeContract({signer, method: 'claim', args, overrides});
+        let args = [points];
+        return await this.writeContract({signer, method: 'claimTradingReward', args, overrides});
+    }
+
+    async claimReferralReward({
+        signer,
+        points,
+        overrides = {}
+    }: claimParams): Promise<ContractTransactionResponse | undefined>{
+        let args = [points];
+        return await this.writeContract({signer, method: 'claimReferralReward', args, overrides});
     }
 
 }

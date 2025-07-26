@@ -1,4 +1,4 @@
-{
+export const networks = {
   "localhost": {
     "chainId": 1,
     "contracts": {
@@ -12,7 +12,7 @@
     "contracts": {
       "GeniDex": "0xF354cace41709415ce2a24E5FefBC469D51d4FF8",
       "GeniToken": "0x9F0bccbFF68824f94cDa62c7bc4e05b98b026e34",
-      "GeniRewarder": "0x3A5fBC501c5D515383fADFf5ebD92C393f5eFee9"
+      "GeniRewarder": "0x251dda90Cb94f5F9F29c9cb59FA6A0CF07049632"
     }
   },
   "sepolia": {
@@ -47,4 +47,4 @@
       "GeniRewarder": null
     }
   }
-}
+};

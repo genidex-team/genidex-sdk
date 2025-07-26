@@ -1,5 +1,5 @@
 import { Contract, JsonRpcProvider, Provider, Signer, AddressLike, BigNumberish } from "ethers";
-import { utils } from "../utils";
+import { utils } from "../utils.js";
 
 const ERC20_ABI = [
   "function name() view returns (string)",

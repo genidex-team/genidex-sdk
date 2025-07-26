@@ -26,7 +26,7 @@ async function main(){
     const userInfo = await rewarder.getUserRewardInfo(signerAddress);
     printUserInfo( userInfo );
 
-    await rewarder.claim({signer, pointsToClaim: utils.parseBaseUnit(4000)});
+    await rewarder.claimTradingReward({signer, points: utils.parseBaseUnit(4000)});
 
     const userInfo2 = await rewarder.getUserRewardInfo(signerAddress);
     printUserInfo( userInfo2 );

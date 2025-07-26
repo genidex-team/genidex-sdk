@@ -1,12 +1,12 @@
-import {Networks, RawNetworks} from "../types";
-import rawNetworks from '../config/networks.json';
+import {Networks, RawNetworks} from "../types.js";
+import {networks} from '../config/networks.js';
 
 class Config {
 
     public networks: Networks = {};
 
     constructor(){
-        this.networks = this.parseRawNetworks(rawNetworks);
+        this.networks = this.parseRawNetworks(networks);
     }
 
     parseRawNetworks(raw: RawNetworks): Networks {

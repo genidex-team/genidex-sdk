@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
         "genidex",
-        "Unlockable"
+        "Proxiable",
+        "Reentrancy",
+        "Unlockable",
+        "UUPS"
     ]
 }

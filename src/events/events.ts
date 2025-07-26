@@ -1,8 +1,8 @@
 
 import { BigNumberish, Contract, ContractTransactionResponse, getBigInt, Signer, TransactionReceipt, TransactionResponse, ZeroAddress } from 'ethers';
-import { GeniDex } from '../contracts/genidex';
-import { MarketMap, Orders, OutputOrder, CancelOrderParams, OrderParams } from '../types';
-import { utils } from '../utils';
+import { GeniDex } from '../genidex/genidex.js';
+import { MarketMap, Orders, OutputOrder, CancelOrderParams, OrderParams } from '../types.js';
+import { utils } from '../utils.js';
 import EventEmitter from 'events';
 
 export interface OrderLog {

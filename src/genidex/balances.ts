@@ -5,11 +5,11 @@ import {
     TransactionRequest,
     TransactionResponse
 } from 'ethers';
-import { GeniDex } from './genidex';
-import { ERC20 } from './erc20';
-import { utils } from '../utils';
-import {constants} from '../constants';
-import { GeniDexTransactionResponse } from '../types';
+import { GeniDex } from './genidex.js';
+import { ERC20 } from './erc20.js';
+import { utils } from '../utils.js';
+import {constants} from '../constants.js';
+import { GeniDexTransactionResponse } from '../types.js';
 
 type depositEthParams = {
     signer: Signer;

@@ -6,10 +6,10 @@ import { BigNumberish, Contract,
     BrowserProvider,
     InterfaceAbi
 } from 'ethers';
-import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types";
-import { IERC20Errors } from '../abis/ierc20.errors';
-import {config} from '../config/config';
-import { utils } from '../utils';
+import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types.js";
+import { IERC20Errors } from '../abis/ierc20.errors.js';
+import {config} from '../config/config.js';
+import { utils } from '../utils.js';
 
 
 export abstract class BaseContract {
