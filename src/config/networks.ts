@@ -4,17 +4,17 @@ export const networks = {
     "contracts": {
       "GeniDex": "0xc702c97151f9508B191b637939E856DE8B5c2372",
       "GeniToken": "0xB676D5ED99108d57f11E3755Fd433A867746DD59",
-      "GeniRewarder": "0xf8AadCDD1fe0e6932108C909964A1719234dbD14",
+      "GeniRewarder": "0x2c6151b7CAC81BfDF43C930404C2d405A3330e1a",
       "AccessManager": "0xe231C209f63117448C3bBE2586DCdB3FF6FDE26F"
     }
   },
   "geni": {
     "chainId": 1,
     "contracts": {
-      "GeniDex": "0xC7b1de9C189c0f31D6f7F936C137BEE4b2259457",
-      "GeniToken": "0x9F0bccbFF68824f94cDa62c7bc4e05b98b026e34",
-      "GeniRewarder": "0xeC67cF0755c0A5aaD6C4A4235fDfA35c1EFEA6A9",
-      "AccessManager": null
+      "GeniDex": "0xc702c97151f9508B191b637939E856DE8B5c2372",
+      "GeniToken": "0xB676D5ED99108d57f11E3755Fd433A867746DD59",
+      "GeniRewarder": "0x2f43DBea1bb49297FffA50c90b5C33e0f2fd2096",
+      "AccessManager": "0x33c3278D743e54564893cF75cbCa3b8B9671dA5F"
     }
   },
   "sepolia": {
