@@ -1,5 +1,5 @@
 
-import {JsonRpcProvider, WebSocketProvider, BrowserProvider, Result, ContractTransactionResponse} from 'ethers';
+import {JsonRpcProvider, WebSocketProvider, BrowserProvider, Result, ContractTransactionResponse, Interface} from 'ethers';
 import {BaseContract} from '../base/base.contract.js';
 import {rewarderABI} from "../abis/rewarder.abi.js";
 import {  NetworkName } from "../types.js";
@@ -12,6 +12,8 @@ export class Rewarder extends BaseContract {
 
     constructor() {
         super();
+        this.abi = rewarderABI;
+        this.iface = new Interface(this.abi);
     }
 
     async connect(
@@ -22,7 +24,7 @@ export class Rewarder extends BaseContract {
         let network    = config.getNetwork(networkName);
         let address    = network.contracts.GeniRewarder;
         if(!address) throw new Error('Invalid GeniRewarder contract address. Value: ' + address);
-        await super.init(address, rewarderABI, networkName, providerOrRpc);
+        await super.init(address, networkName, providerOrRpc);
 
         this.apiSocket  = apiSocket;
     }

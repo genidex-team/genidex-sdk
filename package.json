@@ -27,6 +27,11 @@
       "require": "./dist/cjs/rewarder/rewarder.cjs",
       "types": "./dist/rewarder/rewarder.d.ts"
     },
+    "./access": {
+      "import": "./dist/esm/access/access.mjs",
+      "require": "./dist/cjs/access/access.cjs",
+      "types": "./dist/access/access.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -38,6 +43,7 @@
     "build": "tsc && rollup -c",
     "dev": "tsc --watch & rollup -c -w",
     "examples": "nodemon --watch ./src --watch ./examples --watch ./test --ext ts,json,mjs,js --exec 'clear && clear && tsx'",
+    "scripts": "nodemon --watch ./src --watch ./scripts --watch ./test --ext ts,json,mjs,js --exec 'clear && clear && tsx'",
     "docs": "typedoc",
     "dev_docs": "nodemon --watch ./src --watch typedoc.json --ext .ts,.json --exec typedoc",
     "docs_server": "live-server ./docs/out --open=/ --watch=./docs/out",

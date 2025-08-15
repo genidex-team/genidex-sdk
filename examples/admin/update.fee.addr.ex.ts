@@ -1,10 +1,9 @@
 
 import { ethers, formatEther, parseEther, Signature, Signer } from "ethers";
 
-import { GeniDex, NetworkName, utils } from "../src/index";
-import {Admin} from "../src/admin/index";
-import { config } from "../test/config";
-import { error } from "console";
+import { GeniDex, NetworkName, utils } from "../../src/index";
+import {Admin} from "../../src/admin/index";
+import { config } from "../../test/config";
 
 let genidex  = new GeniDex();
 let admin: Admin;
@@ -28,7 +27,7 @@ async function main(){
     const newAddress = await (await provider.getSigner(3)).getAddress();
     await admin.updateFeeReceiver({
         signer: owner,
-        args: [newAddress]
+        newAddress
     });
 
     feeReceiver = await admin.getFeeReceiver();

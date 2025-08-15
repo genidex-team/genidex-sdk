@@ -7,7 +7,8 @@ const inputs = {
   index: 'src/index.ts',
   events: 'src/events/index.ts',
   admin: 'src/admin/index.ts',
-  rewarder: 'src/rewarder/index.ts'
+  rewarder: 'src/rewarder/index.ts',
+  access: 'src/access/index.ts'
 };
 
 export default {

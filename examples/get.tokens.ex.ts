@@ -19,7 +19,7 @@ async function main(){
     // tokens
     console.time();
     const tokens = await genidex.tokens.getAllTokensInfo();
-    console.log('tokens', tokens);
+    console.table(tokens);
     console.timeEnd()
 
     const tokenAddresses = await genidex.tokens.getAllTokens();

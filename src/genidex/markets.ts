@@ -20,6 +20,7 @@ export class Markets {
      */
     async getAllMarkets(): Promise<MarketMap> {
         const marketMap: MarketMap = {};
+        console.log(this.genidex.address)
         try{
             const rawMarkets = await this.genidex.readContract('getAllMarkets');
             for (const m of rawMarkets) {
@@ -50,6 +51,7 @@ export class Markets {
      */
     async getMarket(marketId: BigNumberish): Promise<Market> {
         const raw = await this.genidex.readContract('getMarket', [marketId]);
+        // console.log(raw)
         return {
             id: BigInt(raw.id.toString()),
             symbol: raw.symbol,

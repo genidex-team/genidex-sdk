@@ -1,71 +1,45 @@
 export const geniDexFullABI = [
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "authority",
+        "type": "address"
+      }
+    ],
+    "name": "AccessManagedInvalidAuthority",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "delay",
+        "type": "uint32"
+      }
+    ],
+    "name": "AccessManagedRequiredDelay",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "AccessManagedUnauthorized",
+    "type": "error"
   },
   {
     "inputs": [],
     "name": "AddressAlreadyLinked",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      }
-    ],
-    "name": "AddressEmptyCode",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "AmountTooSmall",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "decimals",
-        "type": "uint8"
-      }
-    ],
-    "name": "DecimalsExceedLimit",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "DecimalsFetchFailed",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
-    "name": "ERC1967InvalidImplementation",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ERC1967NonPayable",
     "type": "error"
   },
   {
@@ -80,43 +54,6 @@ export const geniDexFullABI = [
   },
   {
     "inputs": [],
-    "name": "FailedCall",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "available",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "required",
-        "type": "uint256"
-      }
-    ],
-    "name": "InsufficientBalance",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "available",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "required",
-        "type": "uint256"
-      }
-    ],
-    "name": "InsufficientPoints",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "InvalidAddress",
     "type": "error"
   },
@@ -126,300 +63,21 @@ export const geniDexFullABI = [
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "marketCounter",
-        "type": "uint256"
-      }
-    ],
-    "name": "InvalidMarketId",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidProof",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ManualDecimalsRequired",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ManualSymbolRequired",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "baseToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "quoteToken",
-        "type": "address"
-      }
-    ],
-    "name": "MarketAlreadyExists",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NoTokensReceived",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "factor",
-        "type": "uint256"
-      }
-    ],
-    "name": "NormalizationOverflow",
-    "type": "error"
-  },
-  {
     "inputs": [],
     "name": "NotInitializing",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "OnlyRewarderAllowed",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "orderIndex",
-        "type": "uint256"
-      }
-    ],
-    "name": "OrderAlreadyCanceled",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ReentrancyGuardReentrantCall",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ReferralRootNotSet",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "ReferrerAlreadySet",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "SafeERC20FailedOperation",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "SelfReferralNotAllowed",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "SymbolFetchFailed",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "TokenNotListed",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "total",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minimumRequired",
-        "type": "uint256"
-      }
-    ],
-    "name": "TotalTooSmall",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TransferFailed",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "actual",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expected",
-        "type": "uint256"
-      }
-    ],
-    "name": "TransferMismatch",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UUPSUnauthorizedCallContext",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "slot",
-        "type": "bytes32"
-      }
-    ],
-    "name": "UUPSUnsupportedProxiableUUID",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint80",
-        "name": "caller",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "owner",
-        "type": "uint80"
-      }
-    ],
-    "name": "Unauthorized",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserNotFound",
     "type": "error"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "authority",
+        "type": "address"
       }
     ],
-    "name": "Deposit",
+    "name": "AuthorityUpdated",
     "type": "event"
   },
   {
@@ -477,26 +135,455 @@ export const geniDexFullABI = [
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "authority",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isConsumingScheduledOp",
+    "outputs": [
+      {
+        "internalType": "bytes4",
+        "name": "",
+        "type": "bytes4"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAuthority",
+        "type": "address"
+      }
+    ],
+    "name": "setAuthority",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_rewarder",
+        "type": "address"
+      }
+    ],
+    "name": "setGeniRewarder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_referralRoot",
+        "type": "bytes32"
+      }
+    ],
+    "name": "setReferralRoot",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAddr",
+        "type": "address"
+      }
+    ],
+    "name": "updateFeeReceiver",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "AmountTooSmall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "decimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "DecimalsExceedLimit",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "required",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoTokensReceived",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "factor",
+        "type": "uint256"
+      }
+    ],
+    "name": "NormalizationOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "TokenNotListed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "TransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "actual",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expected",
+        "type": "uint256"
+      }
+    ],
+    "name": "TransferMismatch",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "UserNotFound",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
-        "name": "trader",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DebugTransfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
         "type": "address"
       },
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Deposit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Withdrawal",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "depositEth",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "normalizedAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "depositToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawEth",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "normalizedAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "marketId",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "internalType": "uint256",
+        "name": "marketCounter",
+        "type": "uint256"
+      }
+    ],
+    "name": "InvalidMarketId",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "orderIndex",
         "type": "uint256"
       }
     ],
-    "name": "OnCancelBuyOrder",
-    "type": "event"
+    "name": "OrderAlreadyCanceled",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "total",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumRequired",
+        "type": "uint256"
+      }
+    ],
+    "name": "TotalTooSmall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint80",
+        "name": "caller",
+        "type": "uint80"
+      },
+      {
+        "internalType": "uint80",
+        "name": "owner",
+        "type": "uint80"
+      }
+    ],
+    "name": "Unauthorized",
+    "type": "error"
   },
   {
     "anonymous": false,
@@ -520,7 +607,7 @@ export const geniDexFullABI = [
         "type": "uint256"
       }
     ],
-    "name": "OnCancelSellOrder",
+    "name": "OnCancelBuyOrder",
     "type": "event"
   },
   {
@@ -585,271 +672,6 @@ export const geniDexFullABI = [
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "orderIndex",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "remainingQuantity",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lastPrice",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint80",
-        "name": "userID",
-        "type": "uint80"
-      }
-    ],
-    "name": "OnPlaceSellOrder",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "Paused",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      }
-    ],
-    "name": "TokenListed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "Unpaused",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
-    "name": "Upgraded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Withdrawal",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "BASE_UNIT",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "UPGRADE_INTERFACE_VERSION",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "baseAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "quoteAddress",
-        "type": "address"
-      }
-    ],
-    "name": "addMarket",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint80",
-        "name": "userID",
-        "type": "uint80"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "balances",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "buyOrders",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "userID",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "price",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "quantity",
-        "type": "uint80"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -875,12 +697,32 @@ export const geniDexFullABI = [
         "type": "uint256"
       },
       {
+        "internalType": "uint80",
+        "name": "price",
+        "type": "uint80"
+      },
+      {
+        "internalType": "uint80",
+        "name": "quantity",
+        "type": "uint80"
+      },
+      {
         "internalType": "uint256",
-        "name": "orderIndex",
+        "name": "filledOrderId",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "sellOrderIDs",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
       }
     ],
-    "name": "cancelSellOrder",
+    "name": "placeBuyOrder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -888,42 +730,363 @@ export const geniDexFullABI = [
   {
     "inputs": [
       {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotAddFunctionToDiamondThatAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4[]",
+        "name": "_selectors",
+        "type": "bytes4[]"
+      }
+    ],
+    "name": "CannotAddSelectorsToZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotRemoveFunctionThatDoesNotExist",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotRemoveImmutableFunction",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotReplaceFunctionThatDoesNotExists",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotReplaceFunctionWithTheSameFunctionFromTheSameFacet",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4[]",
+        "name": "_selectors",
+        "type": "bytes4[]"
+      }
+    ],
+    "name": "CannotReplaceFunctionsFromFacetWithZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "CannotReplaceImmutableFunction",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "_action",
+        "type": "uint8"
+      }
+    ],
+    "name": "IncorrectFacetCutAction",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
-        "name": "userAddress",
+        "name": "_initializationContractAddress",
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "pointsToDeduct",
-        "type": "uint256"
+        "internalType": "bytes",
+        "name": "_calldata",
+        "type": "bytes"
       }
     ],
-    "name": "deductUserPoints",
+    "name": "InitializationFunctionReverted",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_contractAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_message",
+        "type": "string"
+      }
+    ],
+    "name": "NoBytecodeAtAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_facetAddress",
+        "type": "address"
+      }
+    ],
+    "name": "NoSelectorsProvidedForFacetForCut",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_facetAddress",
+        "type": "address"
+      }
+    ],
+    "name": "RemoveFacetAddressMustBeZeroAddress",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "facetAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "enum IDiamond.FacetCutAction",
+            "name": "action",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes4[]",
+            "name": "functionSelectors",
+            "type": "bytes4[]"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct IDiamond.FacetCut[]",
+        "name": "_diamondCut",
+        "type": "tuple[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_init",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "_calldata",
+        "type": "bytes"
+      }
+    ],
+    "name": "DiamondCut",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "facetAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "enum IDiamond.FacetCutAction",
+            "name": "action",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes4[]",
+            "name": "functionSelectors",
+            "type": "bytes4[]"
+          }
+        ],
+        "internalType": "struct IDiamond.FacetCut[]",
+        "name": "_diamondCut",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_init",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_calldata",
+        "type": "bytes"
+      }
+    ],
+    "name": "diamondCut",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_functionSelector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "facetAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "facetAddress_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "depositEth",
-    "outputs": [],
-    "stateMutability": "payable",
+    "name": "facetAddresses",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "facetAddresses_",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "tokenAddress",
+        "name": "_facet",
+        "type": "address"
+      }
+    ],
+    "name": "facetFunctionSelectors",
+    "outputs": [
+      {
+        "internalType": "bytes4[]",
+        "name": "_facetFunctionSelectors",
+        "type": "bytes4[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "facets",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "facetAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes4[]",
+            "name": "functionSelectors",
+            "type": "bytes4[]"
+          }
+        ],
+        "internalType": "struct IDiamondLoupe.Facet[]",
+        "name": "facets_",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "baseToken",
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "normalizedAmount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "quoteToken",
+        "type": "address"
       }
     ],
-    "name": "depositToken",
+    "name": "MarketAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "baseAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "quoteAddress",
+        "type": "address"
+      }
+    ],
+    "name": "addMarket",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -953,16 +1116,235 @@ export const geniDexFullABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isRewardable",
+        "type": "bool"
+      }
+    ],
+    "name": "updateMarketIsRewardable",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_contractOwner",
+        "type": "address"
+      }
+    ],
+    "name": "NotContractOwner",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
     "inputs": [],
-    "name": "geniRewarder",
+    "name": "owner",
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "owner_",
         "type": "address"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "required",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientPoints",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidProof",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "OnlyRewarderAllowed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReferralRootNotSet",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "ReferrerAlreadySet",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "SelfReferralNotAllowed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pointsToDeduct",
+        "type": "uint256"
+      }
+    ],
+    "name": "deductUserPoints",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalUnclaimedPoints",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getUserPoints",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "proof",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "referees",
+        "type": "address[]"
+      }
+    ],
+    "name": "migrateReferees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pointDecimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_referrer",
+        "type": "address"
+      }
+    ],
+    "name": "setReferrer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1079,7 +1461,7 @@ export const geniDexFullABI = [
   {
     "inputs": [
       {
-        "internalType": "enum Storage.OrderType",
+        "internalType": "uint8",
         "name": "orderType",
         "type": "uint8"
       },
@@ -1193,7 +1575,7 @@ export const geniDexFullABI = [
   {
     "inputs": [
       {
-        "internalType": "enum Storage.OrderType",
+        "internalType": "uint8",
         "name": "orderType",
         "type": "uint8"
       },
@@ -1246,6 +1628,19 @@ export const geniDexFullABI = [
         "internalType": "struct Storage.OutputOrder[]",
         "name": "orders",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReader",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1356,7 +1751,7 @@ export const geniDexFullABI = [
             "type": "bool"
           }
         ],
-        "internalType": "struct Tokens.TokenInfo[]",
+        "internalType": "struct ReaderFacet.TokenInfo[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -1365,13 +1760,19 @@ export const geniDexFullABI = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTotalUnclaimedPoints",
+    "inputs": [
+      {
+        "internalType": "uint80",
+        "name": "userID",
+        "type": "uint80"
+      }
+    ],
+    "name": "getUserAddress",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1385,26 +1786,117 @@ export const geniDexFullABI = [
         "type": "address"
       }
     ],
-    "name": "getUserPoints",
+    "name": "getUserID",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "uint80",
+        "name": "userID",
+        "type": "uint80"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
         "internalType": "address",
-        "name": "initialOwner",
+        "name": "trader",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "orderIndex",
+        "type": "uint256"
       }
     ],
-    "name": "initialize",
+    "name": "OnCancelSellOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "orderIndex",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "remainingQuantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lastPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint80",
+        "name": "userID",
+        "type": "uint80"
+      }
+    ],
+    "name": "OnPlaceSellOrder",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "orderIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "cancelSellOrder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1412,21 +1904,79 @@ export const geniDexFullABI = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint80",
+        "name": "price",
+        "type": "uint80"
+      },
+      {
+        "internalType": "uint80",
+        "name": "quantity",
+        "type": "uint80"
+      },
+      {
+        "internalType": "uint256",
+        "name": "filledOrderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "buyOrderIDs",
+        "type": "uint256[]"
+      },
+      {
         "internalType": "address",
-        "name": "",
+        "name": "referrer",
         "type": "address"
       }
     ],
-    "name": "isTokenListed",
-    "outputs": [
+    "name": "placeSellOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DecimalsFetchFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ManualDecimalsRequired",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ManualSymbolRequired",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SymbolFetchFailed",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "TokenListed",
+    "type": "event"
   },
   {
     "inputs": [
@@ -1472,470 +2022,6 @@ export const geniDexFullABI = [
       }
     ],
     "name": "listToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "marketCounter",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "name": "marketIDs",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "markets",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "price",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "lastUpdatePrice",
-        "type": "uint80"
-      },
-      {
-        "internalType": "bool",
-        "name": "isRewardable",
-        "type": "bool"
-      },
-      {
-        "internalType": "address",
-        "name": "baseAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "quoteAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32[]",
-        "name": "proof",
-        "type": "bytes32[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "referees",
-        "type": "address[]"
-      }
-    ],
-    "name": "migrateReferees",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pause",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "paused",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint80",
-        "name": "price",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "quantity",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint256",
-        "name": "filledOrderId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "sellOrderIDs",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      }
-    ],
-    "name": "placeBuyOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint80",
-        "name": "price",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "quantity",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint256",
-        "name": "filledOrderId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "buyOrderIDs",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      }
-    ],
-    "name": "placeSellOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pointDecimals",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "proxiableUUID",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "refereesOf",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "referralRoot",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "sellOrders",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "userID",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "price",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "quantity",
-        "type": "uint80"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_rewarder",
-        "type": "address"
-      }
-    ],
-    "name": "setGeniRewarder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_referralRoot",
-        "type": "bytes32"
-      }
-    ],
-    "name": "setReferralRoot",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_referrer",
-        "type": "address"
-      }
-    ],
-    "name": "setReferrer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "tokens",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "minOrderAmount",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "minTransferAmount",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint80",
-        "name": "usdMarketID",
-        "type": "uint80"
-      },
-      {
-        "internalType": "uint8",
-        "name": "decimals",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bool",
-        "name": "isUSD",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalUnclaimedPoints",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "unpause",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newAddr",
-        "type": "address"
-      }
-    ],
-    "name": "updateFeeReceiver",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "isRewardable",
-        "type": "bool"
-      }
-    ],
-    "name": "updateMarketIsRewardable",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -2008,144 +2094,6 @@ export const geniDexFullABI = [
       }
     ],
     "name": "updateUSDMarketID",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newImplementation",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "upgradeToAndCall",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint80",
-        "name": "",
-        "type": "uint80"
-      }
-    ],
-    "name": "userAddresses",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "userCounter",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "",
-        "type": "uint80"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userIDs",
-    "outputs": [
-      {
-        "internalType": "uint80",
-        "name": "",
-        "type": "uint80"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint80",
-        "name": "userID",
-        "type": "uint80"
-      }
-    ],
-    "name": "userPoints",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userReferrer",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawEth",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "tokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "normalizedAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

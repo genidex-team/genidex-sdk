@@ -1,4 +1,5 @@
-import {LogDescription, EventLog, ethers, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription, formatEther, parseUnits } from "ethers";
+import {LogDescription, EventLog, Provider, BigNumberish, toBigInt, formatUnits, ErrorDescription,
+  parseUnits, Contract } from "ethers";
 import { constants } from "./constants.js";
 import { OutputOrder } from "./types.js";
 
@@ -25,7 +26,7 @@ export class Utils{
     } else {
       // ERC20 balance
       const abi = ["function balanceOf(address) view returns (uint256)"];
-      const contract = new ethers.Contract(tokenAddress, abi, provider);
+      const contract = new Contract(tokenAddress, abi, provider);
       const rawBalance: bigint = await contract.balanceOf(userAddress);
       const normBalance: bigint = this.toNormAmount(rawBalance, decimals);
       return normBalance;
@@ -214,6 +215,10 @@ export class Utils{
     const seconds = diffSec % 60;
 
     return { days, minutes, seconds };
+  }
+
+  total(price: bigint, quantity: bigint){
+    return price * quantity / constants.BASE_UNIT;
   }
 
 }

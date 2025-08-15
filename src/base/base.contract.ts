@@ -4,7 +4,9 @@ import { BigNumberish, Contract,
     Signer, TransactionReceipt, TransactionResponse,
     WebSocketProvider, TransactionRequest, Result,
     BrowserProvider,
-    InterfaceAbi
+    InterfaceAbi,
+    JsonFragment,
+    FunctionFragment
 } from 'ethers';
 import { OutputOrder, NetworkConfig, NetworkName, GeniDexTransactionResponse, WaitOpts, WriteContractParams } from "../types.js";
 import { IERC20Errors } from '../abis/ierc20.errors.js';
@@ -27,13 +29,12 @@ export abstract class BaseContract {
     }
 
     async init(
-        address: string, abi: InterfaceAbi,
+        address: string,
         networkName: NetworkName | string,
         providerOrRpc: WebSocketProvider | JsonRpcProvider | BrowserProvider | string,
         apiSocket?: any
     ){
         this.address = address;
-        this.abi = abi;
         if(typeof providerOrRpc == 'string'){
             this.provider = new JsonRpcProvider(providerOrRpc);
         }else{
@@ -383,6 +384,24 @@ export abstract class BaseContract {
         } catch (error: any) {
             await this.revertError(error, method, args, overrides);
         }
+    }
+
+    getInterface(abiOrInterface: string | JsonFragment[] | Interface): Interface{
+        const iface =
+            abiOrInterface instanceof Interface
+            ? abiOrInterface
+            : new Interface(abiOrInterface);
+        return iface;
+    }
+
+    getAllSelectors( abiOrInterface: string | JsonFragment[] | Interface): string[] {
+        const iface = this.getInterface(abiOrInterface);
+
+        return iface.fragments
+            .filter((f): f is FunctionFragment => f.type === "function")
+            .map((f) => (
+                f.selector as `0x${string}`
+            ));
     }
 
 }

@@ -19,7 +19,7 @@ async function main(){
     // markets
     console.time();
     const markets = await genidex.markets.getAllMarkets();
-    console.log('markets', markets);
+    console.table(markets);
     console.timeEnd()
 
 }

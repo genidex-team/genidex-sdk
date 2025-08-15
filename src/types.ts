@@ -24,6 +24,7 @@ export interface ContractAddresses {
   GeniDex: string;
   GeniToken: string | null;
   GeniRewarder: string | null;
+  AccessManager: string | null;
 }
 
 export interface NetworkConfig {

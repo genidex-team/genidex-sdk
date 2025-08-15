@@ -3,7 +3,8 @@ import { BigNumberish, Contract,
     ErrorDescription, getBigInt, Interface, JsonRpcProvider,
     Signer, TransactionReceipt, TransactionResponse,
     WebSocketProvider, TransactionRequest, Result,
-    BrowserProvider
+    BrowserProvider,
+    AddressLike
 } from 'ethers';
 import {BaseContract} from '../base/base.contract.js';
 import {geniDexABI} from "../abis/genidex.abi.js";
@@ -34,6 +35,8 @@ export class GeniDex extends BaseContract {
 
     constructor() {
         super();
+        this.abi = geniDexABI;
+        this.iface = new Interface(this.abi);
     }
 
     async connect(
@@ -43,7 +46,7 @@ export class GeniDex extends BaseContract {
     ){
         let network    = config.getNetwork(networkName);
         let address    = network.contracts.GeniDex;
-        await super.init(address, geniDexABI, networkName, providerOrRpc);
+        await super.init(address, networkName, providerOrRpc);
 
         this.markets    = new Markets(this);
         this.tokens     = new Tokens(this);
@@ -123,5 +126,19 @@ export class GeniDex extends BaseContract {
         }
         return await this.writeContract({signer, method: 'unpause', args:[], overrides});
     }
+
+    async getUserPoints(userAddress: string): Promise<bigint> {
+        const args = [userAddress];
+        const normAmount = await this.readContract('getUserPoints', args);
+        return normAmount;
+    }
+
+    async getReferrer(referee: AddressLike): Promise<AddressLike> {
+        const args = [referee];
+        const referrer = await this.readContract('getReferrer', args);
+        return referrer;
+    }
+
+    
 
 }

@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
         "genidex",
+        "msgsender",
+        "multicall",
         "Proxiable",
         "Reentrancy",
         "Unlockable",
+        "UPGRADER",
         "UUPS"
     ]
 }
